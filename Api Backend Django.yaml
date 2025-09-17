@@ -1,0 +1,4318 @@
+openapi: 3.0.3
+info:
+  title: Condominio Inteligente API
+  version: 1.0.0
+  description: API para gestión de condominio inteligente
+paths:
+  /api/areas/:
+    get:
+      operationId: api_areas_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAreaComunList'
+          description: ''
+    post:
+      operationId: api_areas_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AreaComun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AreaComun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AreaComun'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaComun'
+          description: ''
+  /api/areas/{id}/:
+    get:
+      operationId: api_areas_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Área Común.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaComun'
+          description: ''
+    put:
+      operationId: api_areas_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Área Común.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AreaComun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AreaComun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AreaComun'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaComun'
+          description: ''
+    patch:
+      operationId: api_areas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Área Común.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAreaComun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAreaComun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAreaComun'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaComun'
+          description: ''
+    delete:
+      operationId: api_areas_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Área Común.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/comentarios-reportes/:
+    get:
+      operationId: api_comentarios_reportes_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedComentarioReporteList'
+          description: ''
+    post:
+      operationId: api_comentarios_reportes_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComentarioReporte'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ComentarioReporte'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ComentarioReporte'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComentarioReporte'
+          description: ''
+  /api/comentarios-reportes/{id}/:
+    get:
+      operationId: api_comentarios_reportes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Comentario de Reporte.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComentarioReporte'
+          description: ''
+    put:
+      operationId: api_comentarios_reportes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Comentario de Reporte.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComentarioReporte'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ComentarioReporte'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ComentarioReporte'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComentarioReporte'
+          description: ''
+    patch:
+      operationId: api_comentarios_reportes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Comentario de Reporte.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedComentarioReporte'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedComentarioReporte'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedComentarioReporte'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComentarioReporte'
+          description: ''
+    delete:
+      operationId: api_comentarios_reportes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Comentario de Reporte.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/comunicaciones-guardias/:
+    get:
+      operationId: api_comunicaciones_guardias_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedComunicacionGuardiaList'
+          description: ''
+    post:
+      operationId: api_comunicaciones_guardias_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComunicacionGuardia'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ComunicacionGuardia'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ComunicacionGuardia'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComunicacionGuardia'
+          description: ''
+  /api/comunicaciones-guardias/{id}/:
+    get:
+      operationId: api_comunicaciones_guardias_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Comunicación de Guardia.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComunicacionGuardia'
+          description: ''
+    put:
+      operationId: api_comunicaciones_guardias_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Comunicación de Guardia.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComunicacionGuardia'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ComunicacionGuardia'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ComunicacionGuardia'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComunicacionGuardia'
+          description: ''
+    patch:
+      operationId: api_comunicaciones_guardias_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Comunicación de Guardia.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedComunicacionGuardia'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedComunicacionGuardia'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedComunicacionGuardia'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComunicacionGuardia'
+          description: ''
+    delete:
+      operationId: api_comunicaciones_guardias_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Comunicación de Guardia.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/expensas/:
+    get:
+      operationId: api_expensas_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedExpensaList'
+          description: ''
+    post:
+      operationId: api_expensas_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expensa'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Expensa'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Expensa'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expensa'
+          description: ''
+  /api/expensas/{id}/:
+    get:
+      operationId: api_expensas_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Expensa.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expensa'
+          description: ''
+    put:
+      operationId: api_expensas_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Expensa.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expensa'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Expensa'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Expensa'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expensa'
+          description: ''
+    patch:
+      operationId: api_expensas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Expensa.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedExpensa'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedExpensa'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedExpensa'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expensa'
+          description: ''
+    delete:
+      operationId: api_expensas_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Expensa.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/expensas/generar_masivas/:
+    post:
+      operationId: api_expensas_generar_masivas_create
+      description: Generar expensas masivamente para todos los propietarios
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expensa'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Expensa'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Expensa'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expensa'
+          description: ''
+  /api/guardias/:
+    get:
+      operationId: api_guardias_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGuardiaList'
+          description: ''
+    post:
+      operationId: api_guardias_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Guardia'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Guardia'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Guardia'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guardia'
+          description: ''
+  /api/guardias/{id}/:
+    get:
+      operationId: api_guardias_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Guardia.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guardia'
+          description: ''
+    put:
+      operationId: api_guardias_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Guardia.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Guardia'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Guardia'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Guardia'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guardia'
+          description: ''
+    patch:
+      operationId: api_guardias_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Guardia.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGuardia'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedGuardia'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedGuardia'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guardia'
+          description: ''
+    delete:
+      operationId: api_guardias_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Guardia.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/mascotas/:
+    get:
+      operationId: api_mascotas_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMascotaList'
+          description: ''
+    post:
+      operationId: api_mascotas_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mascota'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Mascota'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Mascota'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mascota'
+          description: ''
+  /api/mascotas/{id}/:
+    get:
+      operationId: api_mascotas_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mascota.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mascota'
+          description: ''
+    put:
+      operationId: api_mascotas_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mascota.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mascota'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Mascota'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Mascota'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mascota'
+          description: ''
+    patch:
+      operationId: api_mascotas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mascota.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMascota'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMascota'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMascota'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mascota'
+          description: ''
+    delete:
+      operationId: api_mascotas_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mascota.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/notificaciones-reportes/:
+    get:
+      operationId: api_notificaciones_reportes_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificacionReporteList'
+          description: ''
+    post:
+      operationId: api_notificaciones_reportes_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificacionReporte'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NotificacionReporte'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NotificacionReporte'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificacionReporte'
+          description: ''
+  /api/notificaciones-reportes/{id}/:
+    get:
+      operationId: api_notificaciones_reportes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Notificación de Reporte.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificacionReporte'
+          description: ''
+    put:
+      operationId: api_notificaciones_reportes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Notificación de Reporte.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificacionReporte'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NotificacionReporte'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NotificacionReporte'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificacionReporte'
+          description: ''
+    patch:
+      operationId: api_notificaciones_reportes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Notificación de Reporte.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificacionReporte'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificacionReporte'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificacionReporte'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificacionReporte'
+          description: ''
+    delete:
+      operationId: api_notificaciones_reportes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Notificación de Reporte.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/pagos/:
+    get:
+      operationId: api_pagos_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPagoList'
+          description: ''
+    post:
+      operationId: api_pagos_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pago'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Pago'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Pago'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pago'
+          description: ''
+  /api/pagos/{id}/:
+    get:
+      operationId: api_pagos_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Pago.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pago'
+          description: ''
+    put:
+      operationId: api_pagos_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Pago.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pago'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Pago'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Pago'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pago'
+          description: ''
+    patch:
+      operationId: api_pagos_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Pago.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPago'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPago'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPago'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pago'
+          description: ''
+    delete:
+      operationId: api_pagos_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Pago.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/pagos/{id}/rechazar_verificacion/:
+    patch:
+      operationId: api_pagos_rechazar_verificacion_partial_update
+      description: Rechazar verificación de un pago
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Pago.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPago'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPago'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPago'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pago'
+          description: ''
+  /api/pagos/{id}/verificar/:
+    patch:
+      operationId: api_pagos_verificar_partial_update
+      description: Verificar un pago manualmente
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Pago.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPago'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPago'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPago'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pago'
+          description: ''
+  /api/propietarios/:
+    get:
+      operationId: api_propietarios_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPropietarioList'
+          description: ''
+    post:
+      operationId: api_propietarios_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Propietario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Propietario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Propietario'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Propietario'
+          description: ''
+  /api/propietarios/{id}/:
+    get:
+      operationId: api_propietarios_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Propietario.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Propietario'
+          description: ''
+    put:
+      operationId: api_propietarios_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Propietario.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Propietario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Propietario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Propietario'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Propietario'
+          description: ''
+    patch:
+      operationId: api_propietarios_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Propietario.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPropietario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPropietario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPropietario'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Propietario'
+          description: ''
+    delete:
+      operationId: api_propietarios_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Propietario.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/propietarios/{id}/create_familiar/:
+    post:
+      operationId: api_propietarios_create_familiar_create
+      description: Crear cuenta familiar/inquilino
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Propietario.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Propietario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Propietario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Propietario'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Propietario'
+          description: ''
+  /api/propietarios/me/:
+    get:
+      operationId: api_propietarios_me_retrieve
+      description: Devuelve el perfil de propietario del usuario autenticado
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Propietario'
+          description: ''
+  /api/registros/:
+    get:
+      operationId: api_registros_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRegistroVisitaList'
+          description: ''
+    post:
+      operationId: api_registros_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroVisita'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegistroVisita'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegistroVisita'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroVisita'
+          description: ''
+  /api/registros/{id}/:
+    get:
+      operationId: api_registros_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Registro de Visita.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroVisita'
+          description: ''
+    put:
+      operationId: api_registros_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Registro de Visita.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroVisita'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegistroVisita'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegistroVisita'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroVisita'
+          description: ''
+    patch:
+      operationId: api_registros_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Registro de Visita.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRegistroVisita'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRegistroVisita'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRegistroVisita'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroVisita'
+          description: ''
+    delete:
+      operationId: api_registros_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Registro de Visita.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/registros/{id}/register_exit/:
+    patch:
+      operationId: api_registros_register_exit_partial_update
+      description: Registrar salida
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Registro de Visita.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRegistroVisita'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRegistroVisita'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRegistroVisita'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroVisita'
+          description: ''
+  /api/registros/register_entry/:
+    post:
+      operationId: api_registros_register_entry_create
+      description: Registrar entrada por QR escaneado
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroVisita'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegistroVisita'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegistroVisita'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroVisita'
+          description: ''
+  /api/reportes/:
+    get:
+      operationId: api_reportes_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReporteList'
+          description: ''
+    post:
+      operationId: api_reportes_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reporte'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Reporte'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Reporte'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reporte'
+          description: ''
+  /api/reportes/{id}/:
+    get:
+      operationId: api_reportes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reporte.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reporte'
+          description: ''
+    put:
+      operationId: api_reportes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reporte.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reporte'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Reporte'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Reporte'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reporte'
+          description: ''
+    patch:
+      operationId: api_reportes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reporte.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReporte'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedReporte'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedReporte'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reporte'
+          description: ''
+    delete:
+      operationId: api_reportes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reporte.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/reservas/:
+    get:
+      operationId: api_reservas_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReservaAreaComunList'
+          description: ''
+    post:
+      operationId: api_reservas_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservaAreaComun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReservaAreaComun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReservaAreaComun'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservaAreaComun'
+          description: ''
+  /api/reservas/{id}/:
+    get:
+      operationId: api_reservas_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reserva de Área Común.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservaAreaComun'
+          description: ''
+    put:
+      operationId: api_reservas_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reserva de Área Común.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservaAreaComun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReservaAreaComun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReservaAreaComun'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservaAreaComun'
+          description: ''
+    patch:
+      operationId: api_reservas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reserva de Área Común.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaAreaComun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaAreaComun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaAreaComun'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservaAreaComun'
+          description: ''
+    delete:
+      operationId: api_reservas_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reserva de Área Común.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/reservas/{id}/confirm/:
+    patch:
+      operationId: api_reservas_confirm_partial_update
+      description: Confirmar reserva y generar cargo en expensa
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reserva de Área Común.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaAreaComun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaAreaComun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaAreaComun'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservaAreaComun'
+          description: ''
+  /api/token/:
+    post:
+      operationId: api_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: api_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/unidades/:
+    get:
+      operationId: api_unidades_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUnidadHabitacionalList'
+          description: ''
+    post:
+      operationId: api_unidades_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacional'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacional'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacional'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnidadHabitacional'
+          description: ''
+  /api/unidades/{id}/:
+    get:
+      operationId: api_unidades_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Unidad Habitacional.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnidadHabitacional'
+          description: ''
+    put:
+      operationId: api_unidades_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Unidad Habitacional.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacional'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacional'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacional'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnidadHabitacional'
+          description: ''
+    patch:
+      operationId: api_unidades_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Unidad Habitacional.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUnidadHabitacional'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUnidadHabitacional'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUnidadHabitacional'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnidadHabitacional'
+          description: ''
+    delete:
+      operationId: api_unidades_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Unidad Habitacional.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/vehiculos/:
+    get:
+      operationId: api_vehiculos_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVehiculoList'
+          description: ''
+    post:
+      operationId: api_vehiculos_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehiculo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Vehiculo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Vehiculo'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehiculo'
+          description: ''
+  /api/vehiculos/{id}/:
+    get:
+      operationId: api_vehiculos_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Vehículo.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehiculo'
+          description: ''
+    put:
+      operationId: api_vehiculos_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Vehículo.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehiculo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Vehiculo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Vehiculo'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehiculo'
+          description: ''
+    patch:
+      operationId: api_vehiculos_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Vehículo.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVehiculo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVehiculo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVehiculo'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehiculo'
+          description: ''
+    delete:
+      operationId: api_vehiculos_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Vehículo.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/vehiculos/{id}/generate_qr/:
+    post:
+      operationId: api_vehiculos_generate_qr_create
+      description: Generar código QR para vehículo
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Vehículo.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehiculo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Vehiculo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Vehiculo'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehiculo'
+          description: ''
+  /api/visitas/:
+    get:
+      operationId: api_visitas_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVisitaList'
+          description: ''
+    post:
+      operationId: api_visitas_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Visita'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Visita'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Visita'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visita'
+          description: ''
+  /api/visitas/{id}/:
+    get:
+      operationId: api_visitas_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Visita.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visita'
+          description: ''
+    put:
+      operationId: api_visitas_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Visita.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Visita'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Visita'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Visita'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visita'
+          description: ''
+    patch:
+      operationId: api_visitas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Visita.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVisita'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVisita'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVisita'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visita'
+          description: ''
+    delete:
+      operationId: api_visitas_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Visita.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    AreaComun:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nombre:
+          type: string
+          description: 'Ej: Piscina, Salón Social, Cancha'
+          maxLength: 100
+        descripcion:
+          type: string
+          nullable: true
+        capacidad:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+        tarifa_hora:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        horario_apertura:
+          type: string
+          format: time
+          description: Hora de apertura
+        horario_cierre:
+          type: string
+          format: time
+          description: Hora de cierre
+        activa:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - capacidad
+      - created_at
+      - horario_apertura
+      - horario_cierre
+      - id
+      - nombre
+      - tarifa_hora
+    ComentarioReporte:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        usuario_nombre:
+          type: string
+          readOnly: true
+        comentario:
+          type: string
+        es_publico:
+          type: boolean
+          description: Visible para el propietario
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reporte:
+          type: integer
+        usuario:
+          type: integer
+      required:
+      - comentario
+      - created_at
+      - id
+      - reporte
+      - usuario
+      - usuario_nombre
+    ComunicacionGuardia:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        guardia_nombre:
+          type: string
+          readOnly: true
+        tipo:
+          $ref: '#/components/schemas/ComunicacionGuardiaTipoEnum'
+        titulo:
+          type: string
+          maxLength: 200
+        mensaje:
+          type: string
+        urgente:
+          type: boolean
+        atendido:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        atendido_at:
+          type: string
+          format: date-time
+          nullable: true
+        guardia:
+          type: integer
+        atendido_por:
+          type: integer
+          nullable: true
+      required:
+      - created_at
+      - guardia
+      - guardia_nombre
+      - id
+      - mensaje
+      - tipo
+      - titulo
+    ComunicacionGuardiaTipoEnum:
+      enum:
+      - comunicado
+      - incidente
+      - solicitud_asistencia
+      - mantenimiento
+      type: string
+      description: |-
+        * `comunicado` - Comunicado General
+        * `incidente` - Reporte de Incidente
+        * `solicitud_asistencia` - Solicitud de Asistencia
+        * `mantenimiento` - Reporte de Mantenimiento
+    Expensa:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        total:
+          type: string
+          readOnly: true
+        total_pagado_verificado:
+          type: string
+          readOnly: true
+        saldo_pendiente:
+          type: string
+          readOnly: true
+        esta_vencida:
+          type: string
+          readOnly: true
+        mes_referencia:
+          type: string
+          format: date
+          description: Primer día del mes de referencia
+        cuota_basica:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        reservas:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        multas:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        fecha_vencimiento:
+          type: string
+          format: date
+        pagado:
+          type: boolean
+        observaciones:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+      required:
+      - created_at
+      - cuota_basica
+      - esta_vencida
+      - fecha_vencimiento
+      - id
+      - mes_referencia
+      - propietario
+      - propietario_nombre
+      - saldo_pendiente
+      - total
+      - total_pagado_verificado
+      - updated_at
+    Guardia:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        turno:
+          $ref: '#/components/schemas/TurnoEnum'
+        activo:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - turno
+      - user
+    Mascota:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        nombre:
+          type: string
+          maxLength: 100
+        tipo:
+          $ref: '#/components/schemas/MascotaTipoEnum'
+        raza:
+          type: string
+          nullable: true
+          maxLength: 100
+        edad:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        foto:
+          type: string
+          format: uri
+          nullable: true
+        vacunas_al_dia:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+      required:
+      - created_at
+      - id
+      - nombre
+      - propietario
+      - propietario_nombre
+      - tipo
+    MascotaTipoEnum:
+      enum:
+      - perro
+      - gato
+      - ave
+      - otro
+      type: string
+      description: |-
+        * `perro` - Perro
+        * `gato` - Gato
+        * `ave` - Ave
+        * `otro` - Otro
+    MetodoPagoEnum:
+      enum:
+      - efectivo
+      - transferencia
+      - tarjeta
+      - cheque
+      type: string
+      description: |-
+        * `efectivo` - Efectivo
+        * `transferencia` - Transferencia
+        * `tarjeta` - Tarjeta
+        * `cheque` - Cheque
+    NotificacionReporte:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        mensaje:
+          type: string
+        leido:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        leido_at:
+          type: string
+          format: date-time
+          nullable: true
+        reporte:
+          type: integer
+        usuario_destinatario:
+          type: integer
+      required:
+      - created_at
+      - id
+      - mensaje
+      - reporte
+      - usuario_destinatario
+    PaginatedAreaComunList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AreaComun'
+    PaginatedComentarioReporteList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComentarioReporte'
+    PaginatedComunicacionGuardiaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComunicacionGuardia'
+    PaginatedExpensaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Expensa'
+    PaginatedGuardiaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Guardia'
+    PaginatedMascotaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mascota'
+    PaginatedNotificacionReporteList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificacionReporte'
+    PaginatedPagoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pago'
+    PaginatedPropietarioList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Propietario'
+    PaginatedRegistroVisitaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistroVisita'
+    PaginatedReporteList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reporte'
+    PaginatedReservaAreaComunList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReservaAreaComun'
+    PaginatedUnidadHabitacionalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnidadHabitacional'
+    PaginatedVehiculoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vehiculo'
+    PaginatedVisitaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Visita'
+    Pago:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        expensa_info:
+          type: string
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        puede_verificar:
+          type: string
+          readOnly: true
+        saldo_pendiente_expensa:
+          type: string
+          readOnly: true
+        fecha_pago:
+          type: string
+          format: date
+        monto:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        metodo_pago:
+          $ref: '#/components/schemas/MetodoPagoEnum'
+        comprobante:
+          type: string
+          nullable: true
+          description: Número de comprobante, referencia, etc.
+          maxLength: 200
+        notas:
+          type: string
+          nullable: true
+        verificado:
+          type: boolean
+          description: Si el pago ha sido verificado
+        fecha_verificacion:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        expensa:
+          type: integer
+        verificado_por:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - expensa
+      - expensa_info
+      - fecha_verificacion
+      - id
+      - monto
+      - propietario_nombre
+      - puede_verificar
+      - saldo_pendiente_expensa
+      - updated_at
+      - verificado_por
+    PatchedAreaComun:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nombre:
+          type: string
+          description: 'Ej: Piscina, Salón Social, Cancha'
+          maxLength: 100
+        descripcion:
+          type: string
+          nullable: true
+        capacidad:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+        tarifa_hora:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        horario_apertura:
+          type: string
+          format: time
+          description: Hora de apertura
+        horario_cierre:
+          type: string
+          format: time
+          description: Hora de cierre
+        activa:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedComentarioReporte:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        usuario_nombre:
+          type: string
+          readOnly: true
+        comentario:
+          type: string
+        es_publico:
+          type: boolean
+          description: Visible para el propietario
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reporte:
+          type: integer
+        usuario:
+          type: integer
+    PatchedComunicacionGuardia:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        guardia_nombre:
+          type: string
+          readOnly: true
+        tipo:
+          $ref: '#/components/schemas/ComunicacionGuardiaTipoEnum'
+        titulo:
+          type: string
+          maxLength: 200
+        mensaje:
+          type: string
+        urgente:
+          type: boolean
+        atendido:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        atendido_at:
+          type: string
+          format: date-time
+          nullable: true
+        guardia:
+          type: integer
+        atendido_por:
+          type: integer
+          nullable: true
+    PatchedExpensa:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        total:
+          type: string
+          readOnly: true
+        total_pagado_verificado:
+          type: string
+          readOnly: true
+        saldo_pendiente:
+          type: string
+          readOnly: true
+        esta_vencida:
+          type: string
+          readOnly: true
+        mes_referencia:
+          type: string
+          format: date
+          description: Primer día del mes de referencia
+        cuota_basica:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        reservas:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        multas:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        fecha_vencimiento:
+          type: string
+          format: date
+        pagado:
+          type: boolean
+        observaciones:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+    PatchedGuardia:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        turno:
+          $ref: '#/components/schemas/TurnoEnum'
+        activo:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedMascota:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        nombre:
+          type: string
+          maxLength: 100
+        tipo:
+          $ref: '#/components/schemas/MascotaTipoEnum'
+        raza:
+          type: string
+          nullable: true
+          maxLength: 100
+        edad:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        foto:
+          type: string
+          format: uri
+          nullable: true
+        vacunas_al_dia:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+    PatchedNotificacionReporte:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        mensaje:
+          type: string
+        leido:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        leido_at:
+          type: string
+          format: date-time
+          nullable: true
+        reporte:
+          type: integer
+        usuario_destinatario:
+          type: integer
+    PatchedPago:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        expensa_info:
+          type: string
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        puede_verificar:
+          type: string
+          readOnly: true
+        saldo_pendiente_expensa:
+          type: string
+          readOnly: true
+        fecha_pago:
+          type: string
+          format: date
+        monto:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        metodo_pago:
+          $ref: '#/components/schemas/MetodoPagoEnum'
+        comprobante:
+          type: string
+          nullable: true
+          description: Número de comprobante, referencia, etc.
+          maxLength: 200
+        notas:
+          type: string
+          nullable: true
+        verificado:
+          type: boolean
+          description: Si el pago ha sido verificado
+        fecha_verificacion:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        expensa:
+          type: integer
+        verificado_por:
+          type: integer
+          readOnly: true
+          nullable: true
+    PatchedPropietario:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        user_data:
+          writeOnly: true
+        documento_identidad:
+          type: string
+          description: Número de documento único
+          maxLength: 20
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 15
+        fecha_nacimiento:
+          type: string
+          format: date
+          nullable: true
+        restringido_por_mora:
+          type: boolean
+          description: Propietario restringido por mora
+        meses_mora:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Número de meses en mora
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedRegistroVisita:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        guardia_nombre:
+          type: string
+          readOnly: true
+        tipo_acceso:
+          $ref: '#/components/schemas/TipoAccesoEnum'
+        codigo_qr_escaneado:
+          type: string
+          description: Código QR que se escaneó
+        hora_entrada:
+          type: string
+          format: date-time
+          readOnly: true
+        hora_salida:
+          type: string
+          format: date-time
+          nullable: true
+        observaciones:
+          type: string
+          nullable: true
+        visita:
+          type: integer
+          nullable: true
+        vehiculo:
+          type: integer
+          nullable: true
+        reserva:
+          type: integer
+          nullable: true
+        guardia_registro:
+          type: integer
+    PatchedReporte:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        tipo:
+          $ref: '#/components/schemas/ReporteTipoEnum'
+        titulo:
+          type: string
+          maxLength: 200
+        descripcion:
+          type: string
+        ubicacion:
+          type: string
+          nullable: true
+          maxLength: 200
+        foto:
+          type: string
+          format: uri
+          nullable: true
+        estado:
+          $ref: '#/components/schemas/ReporteEstadoEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+    PatchedReservaAreaComun:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        area_nombre:
+          type: string
+          readOnly: true
+        fecha_reserva:
+          type: string
+          format: date
+          description: Fecha de la reserva
+        hora_inicio:
+          type: string
+          format: time
+          description: Hora de inicio
+        hora_fin:
+          type: string
+          format: time
+          description: Hora de finalización
+        num_personas:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+        costo_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        estado:
+          $ref: '#/components/schemas/ReservaAreaComunEstadoEnum'
+        invitados:
+          description: Lista de invitados con nombres y documentos
+        qr_anfitrion:
+          type: string
+          description: QR para el anfitrión
+        qr_invitados:
+          description: Lista de QRs para invitados
+        observaciones:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+        area:
+          type: integer
+    PatchedUnidadHabitacional:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        numero_unidad:
+          type: string
+          description: 'Ej: A-101, B-203'
+          maxLength: 10
+        edificio:
+          type: string
+          nullable: true
+          maxLength: 50
+        area_m2:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        tipo_unidad:
+          $ref: '#/components/schemas/TipoUnidadEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+    PatchedVehiculo:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        qr_code_url:
+          type: string
+          readOnly: true
+        placa:
+          type: string
+          description: Placa única del vehículo
+          maxLength: 10
+        marca:
+          type: string
+          maxLength: 50
+        modelo:
+          type: string
+          maxLength: 50
+        color:
+          type: string
+          maxLength: 30
+        tipo_vehiculo:
+          $ref: '#/components/schemas/TipoVehiculoEnum'
+        qr_code:
+          type: string
+          format: uri
+          nullable: true
+        qr_data:
+          type: string
+          description: Datos del código QR
+        activo:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+    PatchedVisita:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        unidad_numero:
+          type: string
+          readOnly: true
+        nombre_visitante:
+          type: string
+          maxLength: 100
+        documento_visitante:
+          type: string
+          maxLength: 20
+        telefono_visitante:
+          type: string
+          nullable: true
+          maxLength: 15
+        fecha_visita:
+          type: string
+          format: date
+        hora_entrada_esperada:
+          type: string
+          format: time
+          nullable: true
+        observaciones:
+          type: string
+          nullable: true
+        qr_code:
+          type: string
+          readOnly: true
+          description: Código QR para la visita
+        activa:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+          readOnly: true
+        unidad:
+          type: integer
+          nullable: true
+          description: Unidad asociada a la visita
+    Propietario:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        user_data:
+          writeOnly: true
+        documento_identidad:
+          type: string
+          description: Número de documento único
+          maxLength: 20
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 15
+        fecha_nacimiento:
+          type: string
+          format: date
+          nullable: true
+        restringido_por_mora:
+          type: boolean
+          description: Propietario restringido por mora
+        meses_mora:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Número de meses en mora
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - documento_identidad
+      - id
+      - updated_at
+      - user
+    RegistroVisita:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        guardia_nombre:
+          type: string
+          readOnly: true
+        tipo_acceso:
+          $ref: '#/components/schemas/TipoAccesoEnum'
+        codigo_qr_escaneado:
+          type: string
+          description: Código QR que se escaneó
+        hora_entrada:
+          type: string
+          format: date-time
+          readOnly: true
+        hora_salida:
+          type: string
+          format: date-time
+          nullable: true
+        observaciones:
+          type: string
+          nullable: true
+        visita:
+          type: integer
+          nullable: true
+        vehiculo:
+          type: integer
+          nullable: true
+        reserva:
+          type: integer
+          nullable: true
+        guardia_registro:
+          type: integer
+      required:
+      - codigo_qr_escaneado
+      - guardia_nombre
+      - guardia_registro
+      - hora_entrada
+      - id
+      - tipo_acceso
+    Reporte:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        tipo:
+          $ref: '#/components/schemas/ReporteTipoEnum'
+        titulo:
+          type: string
+          maxLength: 200
+        descripcion:
+          type: string
+        ubicacion:
+          type: string
+          nullable: true
+          maxLength: 200
+        foto:
+          type: string
+          format: uri
+          nullable: true
+        estado:
+          $ref: '#/components/schemas/ReporteEstadoEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+      required:
+      - created_at
+      - descripcion
+      - id
+      - propietario
+      - propietario_nombre
+      - tipo
+      - titulo
+      - updated_at
+    ReporteEstadoEnum:
+      enum:
+      - pendiente
+      - en_proceso
+      - resuelto
+      - cerrado
+      type: string
+      description: |-
+        * `pendiente` - Pendiente
+        * `en_proceso` - En Proceso
+        * `resuelto` - Resuelto
+        * `cerrado` - Cerrado
+    ReporteTipoEnum:
+      enum:
+      - mantenimiento
+      - ruido
+      - seguridad
+      - limpieza
+      - otro
+      type: string
+      description: |-
+        * `mantenimiento` - Mantenimiento
+        * `ruido` - Ruido Excesivo
+        * `seguridad` - Seguridad
+        * `limpieza` - Limpieza
+        * `otro` - Otro
+    ReservaAreaComun:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        area_nombre:
+          type: string
+          readOnly: true
+        fecha_reserva:
+          type: string
+          format: date
+          description: Fecha de la reserva
+        hora_inicio:
+          type: string
+          format: time
+          description: Hora de inicio
+        hora_fin:
+          type: string
+          format: time
+          description: Hora de finalización
+        num_personas:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+        costo_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        estado:
+          $ref: '#/components/schemas/ReservaAreaComunEstadoEnum'
+        invitados:
+          description: Lista de invitados con nombres y documentos
+        qr_anfitrion:
+          type: string
+          description: QR para el anfitrión
+        qr_invitados:
+          description: Lista de QRs para invitados
+        observaciones:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+        area:
+          type: integer
+      required:
+      - area
+      - area_nombre
+      - costo_total
+      - created_at
+      - fecha_reserva
+      - hora_fin
+      - hora_inicio
+      - id
+      - num_personas
+      - propietario
+      - propietario_nombre
+      - updated_at
+    ReservaAreaComunEstadoEnum:
+      enum:
+      - pendiente
+      - confirmada
+      - rechazada
+      - cancelada
+      type: string
+      description: |-
+        * `pendiente` - Pendiente
+        * `confirmada` - Confirmada
+        * `rechazada` - Rechazada
+        * `cancelada` - Cancelada
+    TipoAccesoEnum:
+      enum:
+      - vehiculo
+      - visitante
+      - invitado_reserva
+      - anfitrion_reserva
+      type: string
+      description: |-
+        * `vehiculo` - Vehículo
+        * `visitante` - Visitante
+        * `invitado_reserva` - Invitado de Reserva
+        * `anfitrion_reserva` - Anfitrión de Reserva
+    TipoUnidadEnum:
+      enum:
+      - apartamento
+      - casa
+      - oficina
+      - local
+      type: string
+      description: |-
+        * `apartamento` - Apartamento
+        * `casa` - Casa
+        * `oficina` - Oficina
+        * `local` - Local Comercial
+    TipoVehiculoEnum:
+      enum:
+      - carro
+      - moto
+      - bicicleta
+      type: string
+      description: |-
+        * `carro` - Automóvil
+        * `moto` - Motocicleta
+        * `bicicleta` - Bicicleta
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TurnoEnum:
+      enum:
+      - dia
+      - noche
+      - mixto
+      type: string
+      description: |-
+        * `dia` - Diurno (6:00-18:00)
+        * `noche` - Nocturno (18:00-6:00)
+        * `mixto` - Mixto
+    UnidadHabitacional:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        numero_unidad:
+          type: string
+          description: 'Ej: A-101, B-203'
+          maxLength: 10
+        edificio:
+          type: string
+          nullable: true
+          maxLength: 50
+        area_m2:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        tipo_unidad:
+          $ref: '#/components/schemas/TipoUnidadEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+      required:
+      - area_m2
+      - created_at
+      - id
+      - numero_unidad
+      - propietario
+      - propietario_nombre
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+      required:
+      - id
+      - username
+    Vehiculo:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        qr_code_url:
+          type: string
+          readOnly: true
+        placa:
+          type: string
+          description: Placa única del vehículo
+          maxLength: 10
+        marca:
+          type: string
+          maxLength: 50
+        modelo:
+          type: string
+          maxLength: 50
+        color:
+          type: string
+          maxLength: 30
+        tipo_vehiculo:
+          $ref: '#/components/schemas/TipoVehiculoEnum'
+        qr_code:
+          type: string
+          format: uri
+          nullable: true
+        qr_data:
+          type: string
+          description: Datos del código QR
+        activo:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+      required:
+      - color
+      - created_at
+      - id
+      - marca
+      - modelo
+      - placa
+      - propietario
+      - propietario_nombre
+      - qr_code_url
+    Visita:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        propietario_nombre:
+          type: string
+          readOnly: true
+        unidad_numero:
+          type: string
+          readOnly: true
+        nombre_visitante:
+          type: string
+          maxLength: 100
+        documento_visitante:
+          type: string
+          maxLength: 20
+        telefono_visitante:
+          type: string
+          nullable: true
+          maxLength: 15
+        fecha_visita:
+          type: string
+          format: date
+        hora_entrada_esperada:
+          type: string
+          format: time
+          nullable: true
+        observaciones:
+          type: string
+          nullable: true
+        qr_code:
+          type: string
+          readOnly: true
+          description: Código QR para la visita
+        activa:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        propietario:
+          type: integer
+          readOnly: true
+        unidad:
+          type: integer
+          nullable: true
+          description: Unidad asociada a la visita
+      required:
+      - created_at
+      - documento_visitante
+      - fecha_visita
+      - id
+      - nombre_visitante
+      - propietario
+      - propietario_nombre
+      - qr_code
+      - unidad_numero
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

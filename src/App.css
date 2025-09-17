@@ -1,0 +1,109 @@
+/* Estilos para móviles y PWA */
+
+/* Eliminar el resaltado azul en Chrome de elementos al hacer clic */
+* {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none; /* Previene el rebote en iOS */
+}
+
+/* Ocultar barra de desplazamiento pero mantener funcionalidad */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE y Edge */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari y Opera */
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+/* Safe areas para dispositivos con notch */
+@supports (padding: max(0px)) {
+  .safe-area-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+}
+
+/* Estilos específicos para PWA instalada */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  body {
+    padding-bottom: 0;
+  }
+}
+
+/* Offline indicator */
+.offline-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #f59e0b;
+  color: black;
+  padding: 0.25rem 1rem;
+  font-size: 0.875rem;
+  text-align: center;
+  z-index: 50;
+}
+
+/* Bottom navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 40;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+  flex: 1;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.bottom-nav-item-active {
+  color: #ef4444;
+}
+
+.bottom-nav-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.bottom-nav-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
