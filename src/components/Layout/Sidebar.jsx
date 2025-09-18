@@ -30,6 +30,7 @@ const Sidebar = ({ isOpen }) => {
     { icon: Users, label: 'Gestionar', 
       submenu: [
         { label: 'Visitas', path: '/visitas', icon: IdCard },
+  { label: 'Reservas', path: '/reservas', icon: Calendar },
         { label: 'Vehículos', path: '/vehiculos', icon: Car },
         { label: 'Mascotas', path: '/mascotas', icon: PawPrint },
         { label: 'Familiar o Inquilino', path: '/familiar', icon: UsersRound },

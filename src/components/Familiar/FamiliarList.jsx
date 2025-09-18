@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { UsersRound, Plus, Loader2, Trash2, X, UserPlus } from 'lucide-react';
+import { Users, Plus, Trash2, UserPlus, Phone, Mail } from 'lucide-react';
 import axiosInstance from '../../api/axiosConfig';
-
-// NOTE: La API expose: /api/propietarios/{id}/  (GET) y /api/propietarios/{id}/create_familiar/ (POST)
-// Necesitamos el id del propietario. Asumimos que viene en user (localStorage 'user') o habrá que pedirlo.
-// Por ahora: intentar leer user.propietario_id (TODO ajustar al modelo real cuando lo confirmemos).
+import PageHeader from '../common/PageHeader';
+import Table from '../common/Table';
+import Modal from '../common/Modal';
+import Input from '../common/Input';
+import Button from '../common/Button';
+import StatsGrid from '../common/StatsGrid';
 
 const initialForm = { nombre: '', email: '', telefono: '' };
 
@@ -23,7 +25,6 @@ const FamiliarList = () => {
       const raw = localStorage.getItem('user');
       if (raw) {
         const u = JSON.parse(raw);
-        // TODO: Ajustar nombre real del campo cuando se confirme (ej: u.propietario?.id)
         const pid = u.propietario_id || u.propietarioId || u.propietario?.id;
         if (pid) setPropietarioId(pid);
       }
@@ -33,13 +34,11 @@ const FamiliarList = () => {
   }, []);
 
   const fetchFamiliares = async () => {
-    if (!propietarioId) return; // Esperar a tener id
+    if (!propietarioId) return;
     setLoading(true);
     setFeedback(null);
     try {
-      // GET propietario para extraer familiares (asumido)
       const response = await axiosInstance.get(`/propietarios/${propietarioId}/`);
-      // TODO: Ajustar según estructura real. Suponemos response.data.familiares || []
       const fam = response.data.familiares || response.data.inquilinos || [];
       setFamiliares(Array.isArray(fam) ? fam : []);
     } catch (err) {
@@ -51,21 +50,28 @@ const FamiliarList = () => {
 
   useEffect(() => { fetchFamiliares(); }, [propietarioId]);
 
-  const openCreate = () => { setFormData(initialForm); setShowForm(true); };
-  const handleChange = (e) => { const { name, value } = e.target; setFormData(p => ({ ...p, [name]: value })); };
+  const openCreate = () => { 
+    setFormData(initialForm); 
+    setShowForm(true); 
+  };
+  
+  const handleChange = (e) => { 
+    const { name, value } = e.target; 
+    setFormData(p => ({ ...p, [name]: value })); 
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!propietarioId) return;
+    
     setCreating(true);
     setFeedback(null);
     try {
-      // POST create_familiar
       const response = await axiosInstance.post(`/propietarios/${propietarioId}/create_familiar/`, formData);
-      // Añadir a la lista (ajustar segun payload devuelto)
       setFamiliares(prev => [...prev, response.data]);
-      setFeedback({ type: 'success', message: 'Familiar agregado' });
+      setFeedback({ type: 'success', message: 'Familiar agregado exitosamente' });
       setShowForm(false);
+      setFormData(initialForm);
     } catch (err) {
       setFeedback({ type: 'error', message: 'Error al crear familiar' });
     } finally {
@@ -74,88 +80,194 @@ const FamiliarList = () => {
   };
 
   const handleDelete = async (f) => {
-    // No tenemos endpoint para eliminar todavía
-    alert('Eliminar aún no implementado (requiere endpoint).');
+    // TODO: Implementar cuando esté disponible el endpoint
+    setFeedback({ 
+      type: 'error', 
+      message: 'Función de eliminar aún no implementada en el backend' 
+    });
   };
+
+  // Configuración de la tabla
+  const columns = [
+    {
+      key: 'nombre',
+      header: 'Nombre',
+      render: (value, row) => {
+        const nombre = value || row.name || '—';
+        return <span className="font-medium">{nombre}</span>;
+      },
+    },
+    {
+      key: 'email',
+      header: 'Correo Electrónico',
+      render: (value) => value || '—',
+    },
+    {
+      key: 'telefono',
+      header: 'Teléfono',
+      render: (value, row) => value || row.phone || '—',
+    },
+    {
+      key: 'actions',
+      header: 'Acciones',
+      className: 'text-right',
+      cellClassName: 'text-right',
+      render: (_, row) => (
+        <div className="flex items-center gap-2 justify-end">
+          <Button
+            variant="icon"
+            icon={Trash2}
+            onClick={() => handleDelete(row)}
+            className="text-red-400 hover:text-red-300"
+            title="Eliminar familiar"
+          />
+        </div>
+      ),
+    },
+  ];
+
+  // Estadísticas
+  const statsData = [
+    {
+      title: 'Familiares',
+      value: familiares.length,
+      variant: 'info',
+      icon: Users,
+    },
+    {
+      title: 'Con Email',
+      value: familiares.filter(f => f.email).length,
+      variant: 'success',
+      icon: Mail,
+    },
+    {
+      title: 'Con Teléfono',
+      value: familiares.filter(f => f.telefono || f.phone).length,
+      variant: 'warning',
+      icon: Phone,
+    },
+  ];
+
+  // Acciones del header
+  const headerActions = (
+    <Button
+      variant="primary"
+      icon={Plus}
+      onClick={openCreate}
+      disabled={!propietarioId}
+    >
+      Agregar Familiar
+    </Button>
+  );
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
-        <h1 className="text-white text-2xl font-bold flex items-center gap-2"><UsersRound className="w-6 h-6" /> Familiares / Inquilinos</h1>
-        <button onClick={openCreate} disabled={!propietarioId} className="btn-primary flex items-center gap-2"><Plus className="w-4 h-4" /> Agregar</button>
-      </div>
+      <PageHeader
+        title="Familiares e Inquilinos"
+        description="Gestiona los familiares e inquilinos de tu unidad"
+        icon={Users}
+        actions={headerActions}
+      />
 
+      {/* Advertencia si no hay propietarioId */}
       {!propietarioId && (
-        <div className="alert-warning text-sm">No se encontró id de propietario en el usuario. Ajustar extracción de propietarioId.</div>
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+          <p className="text-amber-300 text-sm">
+            <strong>Advertencia:</strong> No se encontró el ID del propietario en el usuario. 
+            Por favor, verifica tu sesión o contacta al administrador.
+          </p>
+        </div>
       )}
 
+      {/* Estadísticas */}
+      <StatsGrid stats={statsData} />
+
+      {/* Feedback */}
       {feedback && (
         <div className={feedback.type === 'success' ? 'alert-success' : 'alert-error'}>
           {feedback.message}
         </div>
       )}
 
-      <div className="table-container">
-        <table className="table-primary text-sm">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Teléfono</th>
-              <th className="text-right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={4} className="p-6 text-center"><Loader2 className="w-5 h-5 inline animate-spin mr-2" />Cargando...</td></tr>
-            ) : familiares.length === 0 ? (
-              <tr><td colSpan={4} className="p-6 text-center text-white/60">No hay familiares registrados.</td></tr>
-            ) : (
-              familiares.map(f => (
-                <tr key={f.id || f.email}>
-                  <td className="font-medium">{f.nombre || f.name || '—'}</td>
-                  <td>{f.email || '—'}</td>
-                  <td>{f.telefono || f.phone || '—'}</td>
-                  <td className="flex items-center justify-end gap-2">
-                    <button onClick={() => handleDelete(f)} className="btn-icon" title="Eliminar"><Trash2 className="w-4 h-4 text-red-300" /></button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      {/* Tabla */}
+      <Table
+        columns={columns}
+        data={familiares}
+        loading={loading}
+        emptyMessage="No hay familiares registrados"
+      />
 
-      {showForm && (
-        <div className="modal-overlay">
-          <div className="modal-container max-w-md w-full animate-bounce-in relative">
-            <button onClick={() => setShowForm(false)} className="btn-icon absolute top-3 right-3"><X className="w-5 h-5" /></button>
-            <h2 className="text-white text-lg font-semibold mb-4 flex items-center gap-2"><UserPlus className="w-5 h-5" /> Nuevo Familiar / Inquilino</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm text-white/70 mb-1">Nombre</label>
-                <input name="nombre" value={formData.nombre} onChange={handleChange} required className="input-primary" placeholder="Juan Pérez" />
-              </div>
-              <div>
-                <label className="block text-sm text-white/70 mb-1">Email</label>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} required className="input-primary" placeholder="correo@ejemplo.com" />
-              </div>
-              <div>
-                <label className="block text-sm text-white/70 mb-1">Teléfono</label>
-                <input name="telefono" value={formData.telefono} onChange={handleChange} className="input-primary" placeholder="77777777" />
-              </div>
-              <div className="flex justify-end gap-3 pt-2">
-                <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">Cancelar</button>
-                <button type="submit" disabled={creating || !propietarioId} className="btn-primary flex items-center gap-2">
-                  {creating && <Loader2 className="w-4 h-4 animate-spin" />}
-                  Guardar
-                </button>
-              </div>
-            </form>
-            <p className="text-[11px] text-white/50 mt-4">TODO: Confirmar nombres exactos de campos requeridos por el backend.</p>
+      {/* Modal de formulario */}
+      <Modal
+        isOpen={showForm}
+        onClose={() => { 
+          setShowForm(false); 
+          setFormData(initialForm);
+          setFeedback(null);
+        }}
+        title="Agregar Familiar o Inquilino"
+        size="md"
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            label="Nombre Completo"
+            name="nombre"
+            value={formData.nombre}
+            onChange={handleChange}
+            placeholder="Ej: Juan Pérez"
+            required
+          />
+          
+          <Input
+            label="Correo Electrónico"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="correo@ejemplo.com"
+            required
+          />
+          
+          <Input
+            label="Teléfono"
+            name="telefono"
+            value={formData.telefono}
+            onChange={handleChange}
+            placeholder="Ej: 77777777"
+          />
+
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+            <p className="text-blue-300 text-sm">
+              <strong>Información importante:</strong> Los familiares e inquilinos podrán acceder al sistema 
+              con las credenciales que se les asignen. Se enviará una notificación al correo proporcionado.
+            </p>
           </div>
-        </div>
-      )}
+
+          <div className="flex justify-end gap-3 pt-4">
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={() => { 
+                setShowForm(false); 
+                setFormData(initialForm);
+                setFeedback(null);
+              }}
+              disabled={creating}
+            >
+              Cancelar
+            </Button>
+            
+            <Button
+              type="submit"
+              loading={creating}
+              icon={UserPlus}
+              disabled={!propietarioId}
+            >
+              Agregar Familiar
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };

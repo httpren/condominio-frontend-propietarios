@@ -1958,6 +1958,40 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/reservas/{id}/cancelar/:
+    patch:
+      operationId: api_reservas_cancelar_partial_update
+      description: 'Cancelar una reserva (propietario: si está pendiente o confirmada;
+        admin siempre).'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reserva de Área Común.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaAreaComun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaAreaComun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaAreaComun'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservaAreaComun'
+          description: ''
   /api/reservas/{id}/confirm/:
     patch:
       operationId: api_reservas_confirm_partial_update
@@ -2687,6 +2721,7 @@ components:
           format: date
         pagado:
           type: boolean
+          readOnly: true
         observaciones:
           type: string
           nullable: true
@@ -2707,6 +2742,7 @@ components:
       - fecha_vencimiento
       - id
       - mes_referencia
+      - pagado
       - propietario
       - propietario_nombre
       - saldo_pendiente
@@ -2772,6 +2808,7 @@ components:
           readOnly: true
         propietario:
           type: integer
+          readOnly: true
       required:
       - created_at
       - id
@@ -3213,6 +3250,7 @@ components:
           nullable: true
         verificado:
           type: boolean
+          readOnly: true
           description: Si el pago ha sido verificado
         fecha_verificacion:
           type: string
@@ -3244,6 +3282,7 @@ components:
       - puede_verificar
       - saldo_pendiente_expensa
       - updated_at
+      - verificado
       - verificado_por
     PatchedAreaComun:
       type: object
@@ -3378,6 +3417,7 @@ components:
           format: date
         pagado:
           type: boolean
+          readOnly: true
         observaciones:
           type: string
           nullable: true
@@ -3445,6 +3485,7 @@ components:
           readOnly: true
         propietario:
           type: integer
+          readOnly: true
     PatchedNotificacionReporte:
       type: object
       properties:
@@ -3504,6 +3545,7 @@ components:
           nullable: true
         verificado:
           type: boolean
+          readOnly: true
           description: Si el pago ha sido verificado
         fecha_verificacion:
           type: string
@@ -3670,14 +3712,19 @@ components:
           type: string
           format: decimal
           pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
         estado:
-          $ref: '#/components/schemas/ReservaAreaComunEstadoEnum'
+          allOf:
+          - $ref: '#/components/schemas/ReservaAreaComunEstadoEnum'
+          readOnly: true
         invitados:
           description: Lista de invitados con nombres y documentos
         qr_anfitrion:
           type: string
+          readOnly: true
           description: QR para el anfitrión
         qr_invitados:
+          readOnly: true
           description: Lista de QRs para invitados
         observaciones:
           type: string
@@ -3692,6 +3739,7 @@ components:
           readOnly: true
         propietario:
           type: integer
+          readOnly: true
         area:
           type: integer
     PatchedUnidadHabitacional:
@@ -3753,9 +3801,11 @@ components:
         qr_code:
           type: string
           format: uri
+          readOnly: true
           nullable: true
         qr_data:
           type: string
+          readOnly: true
           description: Datos del código QR
         activo:
           type: boolean
@@ -3765,6 +3815,7 @@ components:
           readOnly: true
         propietario:
           type: integer
+          readOnly: true
     PatchedVisita:
       type: object
       properties:
@@ -4008,14 +4059,19 @@ components:
           type: string
           format: decimal
           pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
         estado:
-          $ref: '#/components/schemas/ReservaAreaComunEstadoEnum'
+          allOf:
+          - $ref: '#/components/schemas/ReservaAreaComunEstadoEnum'
+          readOnly: true
         invitados:
           description: Lista de invitados con nombres y documentos
         qr_anfitrion:
           type: string
+          readOnly: true
           description: QR para el anfitrión
         qr_invitados:
+          readOnly: true
           description: Lista de QRs para invitados
         observaciones:
           type: string
@@ -4030,6 +4086,7 @@ components:
           readOnly: true
         propietario:
           type: integer
+          readOnly: true
         area:
           type: integer
       required:
@@ -4037,6 +4094,7 @@ components:
       - area_nombre
       - costo_total
       - created_at
+      - estado
       - fecha_reserva
       - hora_fin
       - hora_inicio
@@ -4044,6 +4102,8 @@ components:
       - num_personas
       - propietario
       - propietario_nombre
+      - qr_anfitrion
+      - qr_invitados
       - updated_at
     ReservaAreaComunEstadoEnum:
       enum:
@@ -4230,9 +4290,11 @@ components:
         qr_code:
           type: string
           format: uri
+          readOnly: true
           nullable: true
         qr_data:
           type: string
+          readOnly: true
           description: Datos del código QR
         activo:
           type: boolean
@@ -4242,6 +4304,7 @@ components:
           readOnly: true
         propietario:
           type: integer
+          readOnly: true
       required:
       - color
       - created_at
@@ -4251,7 +4314,9 @@ components:
       - placa
       - propietario
       - propietario_nombre
+      - qr_code
       - qr_code_url
+      - qr_data
     Visita:
       type: object
       properties:

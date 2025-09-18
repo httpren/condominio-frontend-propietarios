@@ -14,6 +14,10 @@ import FamiliasPage from './pages/FamiliasPage'
 import VehiculosPage from './pages/VehiculosPage'
 import MascotasPage from './pages/MascotasPage'
 import NotFoundPage from './pages/NotFoundPage'
+import ReservasPage from './pages/ReservasPage'
+
+// Debug components
+import ApiTest from './components/Debug/ApiTest'
 
 // Componente protegido con layout
 const ProtectedLayout = ({ children }) => {
@@ -92,7 +96,14 @@ function App() {
               </ProtectedLayout>
             }
           />
-
+          <Route
+            path="/reservas"
+            element={
+              <ProtectedLayout>
+                <ReservasPage />
+              </ProtectedLayout>
+            }
+          />
           <Route
             path="/vehiculos"
             element={
@@ -107,6 +118,16 @@ function App() {
             element={
               <ProtectedLayout>
                 <MascotasPage />
+              </ProtectedLayout>
+            }
+          />
+
+          {/* Debug Route */}
+          <Route
+            path="/debug"
+            element={
+              <ProtectedLayout>
+                <ApiTest />
               </ProtectedLayout>
             }
           />

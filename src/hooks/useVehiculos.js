@@ -41,23 +41,7 @@ const useVehiculos = () => {
     }
   };
 
-  // Crear nuevo vehículo
-  const createVehiculo = async (vehiculoData) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const payload = toAPIPayload(vehiculoData);
-  const response = await axiosInstance.post('/vehiculos/', payload);
-      setVehiculos(prev => [...prev, transformFromAPI(response.data)]);
-      return { success: true, data: transformFromAPI(response.data) };
-    } catch (err) {
-      const errorMsg = err.response?.data?.message || 'Error al crear vehículo';
-      setError(errorMsg);
-      return { success: false, error: errorMsg };
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Crear nuevo vehículo solo admin lo hará
 
   // Actualizar vehículo existente
   const updateVehiculo = async (id, vehiculoData) => {
@@ -147,7 +131,7 @@ const useVehiculos = () => {
     vehiculos,
     loading,
     error,
-    createVehiculo,
+     
     updateVehiculo,
     deleteVehiculo,
     generateQR,

@@ -226,11 +226,13 @@ input[type="radio"] {
 
 /* ===== MODALES ===== */
 .modal-overlay {
-  @apply fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4;
+  /* Fondo transparente: el usuario pidió que no se oscurezca el contenido detrás del modal */
+  @apply fixed inset-0 bg-transparent flex items-center justify-center z-50 p-4;
 }
 
 .modal-container {
-  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl p-6 max-w-md w-full transform transition-all duration-300;
+  /* Modal opaco (el usuario pidió que solo el modal tenga color y el fondo no se oscurezca) */
+  @apply bg-gradient-to-br from-red-800 to-red-900 border border-white/20 rounded-2xl shadow-2xl p-6 max-w-md w-full transform transition-all duration-300;
 }
 
 /* ===== UTILITARIOS ESPECÍFICOS ===== */

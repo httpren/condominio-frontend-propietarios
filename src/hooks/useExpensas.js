@@ -1,66 +1,86 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '../api/axiosConfig';
 
 /**
- * Hook para gestionar expensas y pagos del propietario usando endpoints REST estándar.
- * Endpoints usados:
- *  - GET /expensas/
- *  - GET /expensas/{id}/
- *  - POST /pagos/  (crear pago)
- *  - (Opcional futuro) PATCH /api/pagos/{id}/verificar/ (admin)
+ * Hook de expensas alineado con la guía backend (EXPENSAS_FRONTEND.md)
+ * Campos clave expensa: id, mes_referencia, total, total_pagado_verificado, saldo_pendiente, pagado, esta_vencida, fecha_vencimiento
+ * Endpoints:
+ *   GET /expensas/?page=&pagado=&vencida=&mes=YYYY-MM
+ *   GET /expensas/{id}/
+ *   POST /pagos/ { expensa, monto, metodo_pago, comprobante? }
  */
 const useExpensas = () => {
   const [expensas, setExpensas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [savingPayment, setSavingPayment] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10); // si backend ignora, queda local
+  const [count, setCount] = useState(0);
+  const [filters, setFilters] = useState({ pagado: '', vencida: '', mes: '' });
 
-  // Normalizar array desde respuesta paginada o no
   const extractResults = (data) => Array.isArray(data?.results) ? data.results : (Array.isArray(data) ? data : []);
 
-  const fetchExpensas = async () => {
+  const buildQueryParams = () => {
+    const params = new URLSearchParams();
+  if (page) params.append('page', page);
+  if (pageSize) params.append('page_size', pageSize);
+    if (filters.pagado) params.append('pagado', filters.pagado);
+    if (filters.vencida) params.append('vencida', filters.vencida);
+    if (filters.mes) params.append('mes', filters.mes); // YYYY-MM
+    return params.toString() ? `?${params.toString()}` : '';
+  };
+
+  const fetchExpensas = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-  const response = await axiosInstance.get('/expensas/');
-      setExpensas(extractResults(response.data));
+      const qp = buildQueryParams();
+      const response = await axiosInstance.get(`/expensas/${qp}`);
+      const data = response.data;
+      const rows = extractResults(data);
+      setExpensas(rows);
+      if (typeof data.count === 'number') setCount(data.count);
     } catch (err) {
       console.error('Error fetchExpensas:', err);
-      setError(err.response?.data?.message || 'Error al cargar expensas');
+      setError(err.response?.data?.detail || 'Error al cargar expensas');
     } finally {
       setLoading(false);
     }
+  }, [page, filters]);
+
+  const setFilter = (name, value) => {
+    setPage(1); // reset page
+    setFilters(prev => ({ ...prev, [name]: value }));
   };
 
   const fetchExpensaDetail = async (id) => {
     try {
-  const response = await axiosInstance.get(`/expensas/${id}/`);
+      const response = await axiosInstance.get(`/expensas/${id}/`);
       return { success: true, data: response.data };
     } catch (err) {
-      return { success: false, error: err.response?.data?.message || 'Error al obtener expensa' };
+      return { success: false, error: err.response?.data?.detail || 'Error al obtener expensa' };
     }
   };
 
-  // Crear pago: campos básicos inferidos (expensa, monto, metodo_pago, comprobante opcional)
   const createPago = async (payload) => {
     setSavingPayment(true);
     setError(null);
     try {
-      let dataToSend; let headers = {};
-      if (payload.comprobante) {
-        const form = new FormData();
-        Object.entries(payload).forEach(([k,v]) => { if (v !== undefined && v !== null) form.append(k, v); });
-        dataToSend = form;
-        headers['Content-Type'] = 'multipart/form-data';
-      } else {
-        dataToSend = payload;
-      }
-  const response = await axiosInstance.post('/pagos/', dataToSend, { headers });
-      // refrescar expensas (estado podría cambiar a pagada)
+      const response = await axiosInstance.post('/pagos/', payload);
+      // Refrescar listado tras pago
       fetchExpensas();
       return { success: true, data: response.data };
     } catch (err) {
-      const msg = err.response?.data?.message || 'Error al registrar pago';
+      const backendData = err.response?.data;
+      let msg = backendData?.detail;
+      // Mensaje custom según guía
+      if (!msg && backendData) {
+        // Intentar extraer primer error
+        msg = Object.values(backendData)[0];
+        if (Array.isArray(msg)) msg = msg[0];
+      }
+      if (!msg) msg = 'Error al registrar pago';
       setError(msg);
       return { success: false, error: msg };
     } finally {
@@ -68,47 +88,55 @@ const useExpensas = () => {
     }
   };
 
-  const getExpensasByPeriod = (year, month) => {
-    return expensas.filter(e => {
-      const fecha = new Date(e.periodo || e.mes || e.created_at || e.fecha_generacion);
-      return fecha.getFullYear() === year && fecha.getMonth() === month;
-    });
-  };
-
-  const isVencida = (expensa) => {
-    if (!expensa) return false;
-    const fv = new Date(expensa.fecha_vencimiento || expensa.vencimiento);
-    if (isNaN(fv.getTime())) return false;
-    const hoy = new Date();
-    return (expensa.estado?.toLowerCase() === 'pendiente') && fv < hoy;
-  };
-
-  const getPaymentSummary = () => {
-    const total = expensas.length;
-    let pagadas = 0, pendientes = 0, vencidas = 0, totalAmount = 0, paidAmount = 0, pendingAmount = 0;
+  const computeStats = () => {
+    const totalReg = expensas.length; // solo página actual si paginado en backend
+    let pagadas = 0, vencidas = 0, parciales = 0, pendientes = 0;
+    let saldoAcumulado = 0;
+    let totalMonto = 0;
     expensas.forEach(e => {
-      const estado = e.estado?.toLowerCase();
-      const monto = parseFloat(e.valor_total || e.total || 0) || 0;
-      totalAmount += monto;
-      if (estado === 'pagada') { pagadas++; paidAmount += monto; }
-      else if (estado === 'pendiente') { pendientes++; pendingAmount += monto; if (isVencida(e)) vencidas++; }
+      const pagado = !!e.pagado;
+      const vencida = !!e.esta_vencida;
+      const saldo = parseFloat(e.saldo_pendiente || 0) || 0;
+      const total = parseFloat(e.total || 0) || 0;
+      const pagadoVerificado = parseFloat(e.total_pagado_verificado || 0) || 0;
+      totalMonto += total;
+      saldoAcumulado += saldo;
+      if (pagado) pagadas++;
+      else if (vencida) vencidas++;
+      else if (!pagado && pagadoVerificado > 0 && saldo > 0) parciales++;
+      else if (!pagado) pendientes++;
     });
-    return { total, pagadas, pendientes, vencidas, totalAmount, paidAmount, pendingAmount };
+    return { totalReg, pagadas, vencidas, parciales, pendientes, saldoAcumulado, totalMonto };
   };
 
-  useEffect(() => { fetchExpensas(); }, []);
+  const getEstado = (e) => {
+    if (e.pagado) return 'pagada';
+    if (e.esta_vencida) return 'vencida';
+    const saldo = parseFloat(e.saldo_pendiente || 0) || 0;
+    const total = parseFloat(e.total || 0) || 0;
+    if (saldo < total && saldo > 0) return 'parcial';
+    return 'pendiente';
+  };
+
+  useEffect(() => { fetchExpensas(); }, [fetchExpensas]);
 
   return {
     expensas,
     loading,
     error,
     savingPayment,
+    page,
+    setPage,
+    count,
+    filters,
+    setFilter,
     fetchExpensas,
     fetchExpensaDetail,
     createPago,
-    getExpensasByPeriod,
-    getPaymentSummary,
-    isVencida
+    computeStats,
+  getEstado,
+  pageSize,
+  setPageSize,
   };
 };
 

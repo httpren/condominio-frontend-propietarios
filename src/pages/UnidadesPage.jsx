@@ -1,9 +1,8 @@
-import React from 'react'
+import React from 'react';
+import UnidadesList from '../components/Unidades/UnidadesList';
 
 const UnidadesPage = () => {
-  return (
-    <div>UnidadesPage</div>
-  )
-}
+  return <UnidadesList />;
+};
 
-export default UnidadesPage
+export default UnidadesPage;
