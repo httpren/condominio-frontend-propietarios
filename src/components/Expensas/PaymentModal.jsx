@@ -12,7 +12,9 @@ import Button from '../common/Button';
 const PaymentModal = ({ expensa, onClose, onSubmit, saving }) => {
   const [monto, setMonto] = useState(expensa?.saldo_pendiente || '');
   const [metodo, setMetodo] = useState('transferencia');
+  const [fechaPago, setFechaPago] = useState(() => new Date().toISOString().slice(0,10));
   const [comprobante, setComprobante] = useState('');
+  const [notas, setNotas] = useState('');
   const [errorLocal, setErrorLocal] = useState(null);
 
   if (!expensa) return null;
@@ -43,9 +45,11 @@ const PaymentModal = ({ expensa, onClose, onSubmit, saving }) => {
     
     onSubmit({
       expensa: expensa.id,
+      fecha_pago: fechaPago, // formato YYYY-MM-DD requerido por backend (DateField)
       monto: montoFloat.toFixed(2),
       metodo_pago: metodo,
       comprobante: comprobante || undefined,
+      notas: notas || undefined,
     });
   };
 
@@ -105,11 +109,30 @@ const PaymentModal = ({ expensa, onClose, onSubmit, saving }) => {
         />
 
         <Input
+          label="Fecha de pago"
+          type="date"
+          value={fechaPago}
+          max={new Date().toISOString().slice(0,10)}
+          onChange={(e) => setFechaPago(e.target.value)}
+          required
+        />
+
+        <Input
           label="Comprobante (opcional)"
           value={comprobante}
           onChange={(e) => setComprobante(e.target.value)}
           placeholder="Número de referencia o comprobante"
         />
+
+        <div>
+          <label className="block text-xs font-medium text-white/70 mb-1">Notas (opcional)</label>
+          <textarea
+            className="w-full rounded bg-white/5 border border-white/10 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500 resize-none min-h-[70px]"
+            value={notas}
+            onChange={(e) => setNotas(e.target.value)}
+            placeholder="Detalle adicional del pago"
+          />
+        </div>
 
         {errorLocal && (
           <div className="alert-error text-sm">

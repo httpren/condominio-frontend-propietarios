@@ -7,14 +7,16 @@ import LoginPage from './components/Auth/LoginPage'
 // Páginas
 import DashboardPage from './pages/DashboardPage'
 import ExpensasPage from './pages/ExpensasPage'
+import ExpensasPagadasPage from './pages/ExpensasPagadasPage'
 import UnidadesPage from './pages/UnidadesPage'
-import ReportesPage from './pages/ReportesPage'
+
 import VisitasPage from './pages/VisitasPage'
 import FamiliasPage from './pages/FamiliasPage'
 import VehiculosPage from './pages/VehiculosPage'
 import MascotasPage from './pages/MascotasPage'
 import NotFoundPage from './pages/NotFoundPage'
 import ReservasPage from './pages/ReservasPage'
+import ComunicadosPage from './pages/ComunicadosPage'
 
 // Debug components
 import ApiTest from './components/Debug/ApiTest'
@@ -59,6 +61,14 @@ function App() {
               </ProtectedLayout>
             }
           />
+          <Route
+            path="/expensas/pagadas"
+            element={
+              <ProtectedLayout>
+                <ExpensasPagadasPage />
+              </ProtectedLayout>
+            }
+          />
 
           <Route
             path="/unidades"
@@ -70,13 +80,14 @@ function App() {
           />
 
           <Route
-            path="/reportes"
+            path="/comunicados"
             element={
               <ProtectedLayout>
-                <ReportesPage />
+                <ComunicadosPage />
               </ProtectedLayout>
             }
           />
+
 
           {/* Rutas del submenú "Gestionar" para propietario */}
           <Route

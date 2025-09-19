@@ -64,3 +64,36 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
 });
+
+// Push notifications para comunicados
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  let payload;
+  try { payload = event.data.json(); } catch { return; }
+  if (payload.type === 'comunicado') {
+    const title = payload.titulo || 'Nuevo Comunicado';
+    const options = {
+      body: payload.mensaje || '',
+      tag: `comunicado-${payload.id}`,
+      data: { comunicadoId: payload.id },
+    };
+    event.waitUntil(self.registration.showNotification(title, options));
+  }
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const id = event.notification.data?.comunicadoId;
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      const targetUrl = id ? `/comunicados/${id}` : '/comunicados';
+      const existing = clientList.find((c) => c.url.includes('/comunicados'));
+      if (existing) {
+        existing.focus();
+        if (id) existing.postMessage({ type: 'OPEN_COMUNICADO', id });
+        return;
+      }
+      return clients.openWindow(targetUrl);
+    })
+  );
+});

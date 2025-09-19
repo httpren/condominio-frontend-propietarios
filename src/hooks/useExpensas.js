@@ -67,6 +67,12 @@ const useExpensas = () => {
     setSavingPayment(true);
     setError(null);
     try {
+      // Asegurar fecha_pago en formato YYYY-MM-DD (backend espera DateField, no datetime)
+      if (!payload.fecha_pago) {
+        payload.fecha_pago = new Date().toISOString().slice(0,10);
+      } else if (payload.fecha_pago.length > 10) {
+        payload.fecha_pago = payload.fecha_pago.slice(0,10);
+      }
       const response = await axiosInstance.post('/pagos/', payload);
       // Refrescar listado tras pago
       fetchExpensas();

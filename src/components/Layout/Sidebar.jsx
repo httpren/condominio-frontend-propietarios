@@ -25,6 +25,7 @@ const Sidebar = ({ isOpen }) => {
   
   const menuItems = [
     { icon: Home, label: 'Dashboard', path: '/dashboard' },
+    { icon: FileText, label: 'Comunicados', path: '/comunicados' },
 
     // Gestionar con submenús organizados por prioridad de uso
     { icon: Users, label: 'Gestionar', 
@@ -40,8 +41,6 @@ const Sidebar = ({ isOpen }) => {
     { icon: Building, label: 'Mis Unidades', path: '/unidades' },
 
     { icon: CreditCard, label: 'Mis Expensas', path: '/expensas' },
-
-    { icon: FileText, label: 'Mis Reportes', path: '/reportes' },
   ];
 
 

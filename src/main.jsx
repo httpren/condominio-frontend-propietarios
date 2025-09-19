@@ -9,6 +9,22 @@ import { register } from './serviceWorkerRegistration';
 // Registrar el service worker para PWA
 register();
 
+// Listener de mensajes desde el Service Worker (ej: abrir comunicado específico)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data?.type === 'OPEN_COMUNICADO') {
+      // Guardar en sessionStorage para que la página de comunicados lo procese (navegación diferida)
+      if (event.data.id) {
+        sessionStorage.setItem('openComunicadoId', String(event.data.id));
+      }
+      // Navegar a /comunicados
+      if (window.location.pathname !== '/comunicados') {
+        window.location.href = '/comunicados';
+      }
+    }
+  });
+}
+
 // Detectar si es un dispositivo móvil para ajustes específicos
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 if (isMobile) {

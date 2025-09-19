@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Bell, Menu, X, ChevronDown, LogOut, Wifi, WifiOff, Battery, MoreVertical } from 'lucide-react';
+import { Search, Menu, X, ChevronDown, LogOut, Wifi, WifiOff, Battery, MoreVertical } from 'lucide-react';
+import NotificationsBell from '../common/NotificationsBell';
 import { useAuth } from '../../context/AuthContext';
 import { isMobile, isInstalled } from '../../serviceWorkerRegistration';
 
@@ -146,10 +147,7 @@ const Navbar = ({ onMenuToggle, isSidebarOpen }) => {
             )}
 
             {/* Notificaciones */}
-            <button className="relative text-white/90 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-white/10">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-pulse">3</span>
-            </button>
+            <NotificationsBell />
             
             {/* Perfil - Desktop */}
             <div className="relative hidden md:block" ref={profileRef}>

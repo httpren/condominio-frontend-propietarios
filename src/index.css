@@ -11,6 +11,13 @@ html, body, #root {
   overscroll-behavior: none; /* Previene el rebote en iOS */
 }
 
+/* Fondo neutro para pantalla de lanzamiento iOS mientras carga (opcional) */
+.splash-bg {
+  background-color: #881337;
+  width: 100%;
+  height: 100%;
+}
+
 /* Estilos para dispositivos táctiles */
 @media (hover: none) {
   button, a {

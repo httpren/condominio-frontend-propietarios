@@ -90,7 +90,7 @@ const UnidadesList = () => {
       },
     },
     {
-      key: 'tipo',
+      key: 'tipo_unidad',
       header: 'Tipo',
       render: (value) => (
         <Badge variant={getTipoBadgeVariant(value)}>
@@ -127,7 +127,7 @@ const UnidadesList = () => {
   // Estadísticas
   const totalArea = unidades.reduce((sum, u) => sum + (parseFloat(u.area_m2) || 0), 0);
   const tiposCount = unidades.reduce((acc, u) => {
-    const tipo = u.tipo || 'No especificado';
+    const tipo = u.tipo_unidad || 'No especificado';
     acc[tipo] = (acc[tipo] || 0) + 1;
     return acc;
   }, {});
@@ -212,7 +212,7 @@ const UnidadesList = () => {
                   </div>
                   <div>
                     <label className="block text-white/50 mb-1">Tipo</label>
-                    <p className="text-white">{unidadDetails.tipo || '—'}</p>
+                    <p className="text-white">{unidadDetails.tipo_unidad || '—'}</p>
                   </div>
                   <div>
                     <label className="block text-white/50 mb-1">Área</label>
@@ -255,10 +255,12 @@ const UnidadesList = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="font-medium text-white">
-                            {conviviente.nombre || conviviente.name || 'Sin nombre'}
+                            {(conviviente.user?.first_name || conviviente.user?.last_name)
+                              ? `${conviviente.user?.first_name || ''} ${conviviente.user?.last_name || ''}`.trim()
+                              : (conviviente.user?.username || conviviente.nombre || conviviente.name || 'Sin nombre')}
                           </h4>
                           <p className="text-white/60 text-sm">
-                            {conviviente.email || 'Sin email'}
+                            {conviviente.user?.email || 'Sin email'}
                           </p>
                         </div>
                         {conviviente.telefono && (

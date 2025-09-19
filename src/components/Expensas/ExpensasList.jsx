@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Filter, RefreshCw, DollarSign, FilterX, Download, AlertTriangle } from 'lucide-react';
+import { Calendar, Filter, RefreshCw, DollarSign, FilterX, Download, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import useExpensas from '../../hooks/useExpensas';
 import usePropietario from '../../hooks/usePropietario';
-import PaymentModal from './PaymentModal';
+// PaymentModal eliminado: reemplazado por ExpensaDetailModal
+import ExpensaDetailModal from './ExpensaDetailModal';
+import RegistrarPagoModal from './RegistrarPagoModal';
 import Pagination from '../common/Pagination';
 import PageHeader from '../common/PageHeader';
 import StatsGrid from '../common/StatsGrid';
@@ -19,8 +22,6 @@ const ExpensasList = () => {
     error, 
     filters, 
     setFilter, 
-    createPago, 
-    savingPayment, 
     computeStats, 
     getEstado, 
     page, 
@@ -33,10 +34,20 @@ const ExpensasList = () => {
   
   const { perfil, fetchPerfil } = usePropietario();
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [selectedExpensa, setSelectedExpensa] = useState(null);
+  const [selectedExpensa, setSelectedExpensa] = useState(null); // para ver detalle
+  const [pagoExpensa, setPagoExpensa] = useState(null); // para registrar pago
   const [feedback, setFeedback] = useState(null);
 
   const stats = computeStats();
+  const navigate = useNavigate();
+
+  // Forzar carga inicial de expensas abiertas (no pagadas) si no hay filtro definido
+  useEffect(() => {
+    if (filters.pagado === '') {
+      setFilter('pagado', 'false');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const clearFilters = () => {
     setFilter('mes', ''); 
@@ -44,19 +55,7 @@ const ExpensasList = () => {
     setFilter('vencida', '');
   };
 
-  const handleSubmitPago = async (payload) => {
-    const res = await createPago(payload);
-    if (res.success) {
-      setFeedback({ type: 'success', message: 'Pago registrado correctamente' });
-      fetchPerfil();
-      setTimeout(() => { 
-        setSelectedExpensa(null); 
-        setFeedback(null); 
-      }, 1500);
-    } else {
-      setFeedback({ type: 'error', message: res.error });
-    }
-  };
+  // Manejo del pago ahora se hace dentro de RegistrarPagoModal (usa hook propio)
 
   const getBadgeVariant = (estado) => {
     switch (estado) {
@@ -76,6 +75,26 @@ const ExpensasList = () => {
         month: 'short', 
         year: 'numeric' 
       }),
+    },
+    {
+      key: 'progreso',
+      header: '%',
+      render: (_, row) => {
+        const total = Number(row.total) || 0;
+        const pagadoVer = Number(row.total_pagado_verificado) || 0;
+        const pct = total > 0 ? Math.min(100, Math.round((pagadoVer / total) * 100)) : 0;
+        return (
+          <div className="w-14">
+            <div className="h-1.5 rounded bg-white/10 overflow-hidden">
+              <div
+                className={`h-full rounded ${pct === 100 ? 'bg-emerald-500' : pct > 0 ? 'bg-info-400' : 'bg-white/20'}`}
+                style={{ width: pct + '%' }}
+              />
+            </div>
+            <div className="text-[10px] text-white/50 mt-1 text-center">{pct}%</div>
+          </div>
+        );
+      }
     },
     {
       key: 'total',
@@ -118,21 +137,27 @@ const ExpensasList = () => {
       header: 'Acciones',
       className: 'text-right',
       cellClassName: 'text-right',
-      render: (_, row) => {
-        const estado = getEstado(row);
-        if (estado === 'pagada') return null;
-        
-        return (
+      render: (_, row) => (
+        <div className="flex justify-end gap-2">
           <Button
-            variant="primary"
-            size="sm"
-            icon={DollarSign}
+            variant="secondary"
+            size="xs"
             onClick={() => setSelectedExpensa(row)}
           >
-            Pagar
+            Detalle
           </Button>
-        );
-      },
+          {getEstado(row) !== 'pagada' && (
+            <Button
+              variant="primary"
+              size="xs"
+              icon={DollarSign}
+              onClick={() => setPagoExpensa(row)}
+            >
+              Pagar
+            </Button>
+          )}
+        </div>
+      ),
     },
   ];
 
@@ -174,6 +199,13 @@ const ExpensasList = () => {
         onClick={() => fetchExpensas()}
       >
         Refrescar
+      </Button>
+      <Button
+        variant="secondary"
+        icon={CheckCircle2}
+        onClick={() => navigate('/expensas/pagadas')}
+      >
+        Pagadas
       </Button>
       <Button
         variant="secondary"
@@ -287,16 +319,22 @@ const ExpensasList = () => {
         />
       )}
 
-      {/* Modal de pago */}
+      {/* Modal detalle */}
       {selectedExpensa && (
-        <PaymentModal
+        <ExpensaDetailModal
           expensa={selectedExpensa}
-          onClose={() => { 
-            setSelectedExpensa(null); 
-            setFeedback(null); 
-          }}
-          onSubmit={handleSubmitPago}
-          saving={savingPayment}
+          onClose={() => { setSelectedExpensa(null); setFeedback(null); }}
+          onOpenPago={(exp) => { setSelectedExpensa(null); setPagoExpensa(exp); }}
+        />
+      )}
+
+      {/* Modal registrar pago */}
+      {pagoExpensa && (
+        <RegistrarPagoModal
+          expensa={pagoExpensa}
+          isOpen={!!pagoExpensa}
+          onClose={() => setPagoExpensa(null)}
+          onPagoCreado={() => { setPagoExpensa(null); fetchExpensas(); fetchPerfil(); setFeedback({ type: 'success', message: 'Pago registrado correctamente' }); }}
         />
       )}
     </div>
