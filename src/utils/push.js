@@ -181,10 +181,23 @@ export async function registrarPush(vapidPublicKeyB64Url, options = {}) {
           if (data && data.endpoint && Array.isArray(data.endpoint)) {
             const msg = data.endpoint.join(' ');
             console.log('ℹ️ Respuesta backend (endpoint 400):', msg);
-            // Cualquier 400 con endpoint lo tratamos como éxito idempotente
-            console.log('✅ Tratado como éxito idempotente (endpoint ya asociado a otro usuario o existente).');
-            registrarPush._busy = false;
-            return { success: true, message: 'Ya registrado (idempotente backend)' };
+            
+            // Si el endpoint ya existe, intentar activarlo en lugar de crear uno nuevo
+            console.log('🔄 Intentando activar suscripción existente...');
+            try {
+              const activateResponse = await axiosInstance.post('/push-subscriptions/activate_by_endpoint/', {
+                endpoint: existing.endpoint
+              });
+              console.log('✅ Suscripción existente activada exitosamente');
+              registrarPush._busy = false;
+              return { success: true, message: 'Suscripción existente activada' };
+            } catch (activateErr) {
+              console.warn('⚠️ No se pudo activar la suscripción existente:', activateErr);
+              // Cualquier 400 con endpoint lo tratamos como éxito idempotente
+              console.log('✅ Tratado como éxito idempotente (endpoint ya asociado a otro usuario o existente).');
+              registrarPush._busy = false;
+              return { success: true, message: 'Ya registrado (idempotente backend)' };
+            }
           }
           console.warn('⚠️ No se pudo registrar la suscripción existente en backend, se intentará recrear:', data || regErr.message);
           // Solo si no es el caso de duplicado intentamos recrear

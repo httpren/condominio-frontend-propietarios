@@ -120,13 +120,19 @@ self.addEventListener('message', (event) => {
 
 // Push notifications para comunicados
 self.addEventListener('push', function(event) {
-  if (!event.data) return;
+  console.log('📱 Push event recibido:', event);
+  
+  if (!event.data) {
+    console.log('⚠️ Push event sin datos');
+    return;
+  }
   
   let data;
   try {
     data = event.data.json();
+    console.log('📱 Push data parseado:', data);
   } catch (error) {
-    console.error('Error parsing push data:', error);
+    console.error('❌ Error parsing push data:', error);
     return;
   }
   
