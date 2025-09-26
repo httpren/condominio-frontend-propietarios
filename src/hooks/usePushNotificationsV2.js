@@ -79,6 +79,8 @@ export const usePushNotificationsV2 = () => {
       
       if (!subscription) {
         addDebugInfo('localSubscription', 'none');
+        // Limpiar estado persistido si no hay suscripción local
+        localStorage.removeItem('push_notification_subscribed');
         return false;
       }
       
@@ -100,11 +102,30 @@ export const usePushNotificationsV2 = () => {
         addDebugInfo('activeSubs', userSubs.filter(s => s.activo).length);
         addDebugInfo('isValid', isValid);
         
+        // Persistir estado en localStorage
+        if (isValid) {
+          localStorage.setItem('push_notification_subscribed', 'true');
+          localStorage.setItem('push_notification_endpoint', currentEndpoint);
+        } else {
+          localStorage.removeItem('push_notification_subscribed');
+          localStorage.removeItem('push_notification_endpoint');
+        }
+        
         return isValid;
       } catch (backendError) {
-        console.warn('⚠️ Error verificando backend, asumiendo suscripción válida:', backendError);
+        console.warn('⚠️ Error verificando backend, verificando estado persistido:', backendError);
         addDebugInfo('backendCheck', 'error');
-        return true; // Si no podemos verificar el backend, asumir que está bien
+        
+        // Si no podemos verificar el backend, usar estado persistido
+        const persistedState = localStorage.getItem('push_notification_subscribed') === 'true';
+        const persistedEndpoint = localStorage.getItem('push_notification_endpoint');
+        
+        if (persistedState && persistedEndpoint === subscription.endpoint) {
+          console.log('✅ Usando estado persistido de suscripción');
+          return true;
+        }
+        
+        return false;
       }
     } catch (error) {
       console.error('Error checking subscription:', error);
@@ -171,6 +192,11 @@ export const usePushNotificationsV2 = () => {
         const response = await axiosInstance.post('/push-subscriptions/', subData);
         addDebugInfo('backendRegistration', 'success');
         setIsSubscribed(true);
+        
+        // Persistir estado de suscripción
+        localStorage.setItem('push_notification_subscribed', 'true');
+        localStorage.setItem('push_notification_endpoint', subscription.endpoint);
+        
         return { success: true, message: 'Suscripción exitosa', data: response.data };
       } catch (regErr) {
         // Si ya existe, intentar activar
@@ -181,11 +207,21 @@ export const usePushNotificationsV2 = () => {
             });
             addDebugInfo('backendActivation', 'success');
             setIsSubscribed(true);
+            
+            // Persistir estado de suscripción
+            localStorage.setItem('push_notification_subscribed', 'true');
+            localStorage.setItem('push_notification_endpoint', subscription.endpoint);
+            
             return { success: true, message: 'Suscripción existente activada' };
           } catch (activateErr) {
             addDebugInfo('backendActivation', 'error');
             // Tratar como éxito idempotente
             setIsSubscribed(true);
+            
+            // Persistir estado de suscripción
+            localStorage.setItem('push_notification_subscribed', 'true');
+            localStorage.setItem('push_notification_endpoint', subscription.endpoint);
+            
             return { success: true, message: 'Ya registrado (idempotente)' };
           }
         } else {
@@ -229,6 +265,11 @@ export const usePushNotificationsV2 = () => {
       }
       
       setIsSubscribed(false);
+      
+      // Limpiar estado persistido
+      localStorage.removeItem('push_notification_subscribed');
+      localStorage.removeItem('push_notification_endpoint');
+      
       return { success: true, message: 'Desuscripción exitosa' };
     } catch (err) {
       const errorMsg = err.message || 'Error al desuscribirse de notificaciones';
@@ -243,11 +284,28 @@ export const usePushNotificationsV2 = () => {
   const sendTestNotification = useCallback(async () => {
     setError(null);
     try {
-      const response = await axiosInstance.post('/push-subscriptions/send_test_notification/');
-      addDebugInfo('testNotification', 'sent');
-      return { success: true, data: response.data };
+      // Crear una notificación local para probar el sistema
+      if ('Notification' in window && Notification.permission === 'granted') {
+        const notification = new Notification('🎉 ¡Notificación de Prueba!', {
+          body: 'Esta es una notificación de prueba desde tu aplicación en Vercel. El sistema está funcionando correctamente.',
+          icon: '/icons/icon-144x144.png',
+          badge: '/icons/icon-144x144.png',
+          tag: 'test-notification',
+          requireInteraction: true
+        });
+        
+        notification.onclick = () => {
+          window.focus();
+          notification.close();
+        };
+        
+        addDebugInfo('testNotification', 'sent');
+        return { success: true, message: 'Notificación local enviada' };
+      } else {
+        throw new Error('Permisos de notificación no concedidos');
+      }
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Error enviando notificación de prueba';
+      const errorMsg = err.message || 'Error enviando notificación de prueba';
       setError(errorMsg);
       addDebugInfo('testNotification', 'error');
       return { success: false, message: errorMsg };
@@ -274,6 +332,14 @@ export const usePushNotificationsV2 = () => {
       
       if (supported) {
         await fetchVapidKey();
+        
+        // Verificar estado persistido primero
+        const persistedState = localStorage.getItem('push_notification_subscribed') === 'true';
+        if (persistedState) {
+          console.log('🔄 Estado persistido encontrado, verificando suscripción...');
+          setIsSubscribed(true);
+        }
+        
         await refreshStatus();
       }
       
