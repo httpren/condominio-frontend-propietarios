@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '../api/axiosConfig';
+import { registerServiceWorker, checkServiceWorkerStatus } from '../utils/serviceWorker';
 
 // Función para convertir clave VAPID de base64url a Uint8Array
 function urlBase64ToUint8Array(base64String) {
@@ -351,6 +352,15 @@ export const usePushNotificationsV2 = () => {
       const supported = checkSupport();
       
       if (supported) {
+        // Registrar Service Worker primero
+        try {
+          await registerServiceWorker();
+          addDebugInfo('serviceWorker', 'registered');
+        } catch (error) {
+          console.error('Error registrando Service Worker:', error);
+          addDebugInfo('serviceWorker', 'error');
+        }
+        
         await fetchVapidKey();
         
         // Verificar estado persistido primero
