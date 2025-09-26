@@ -1,5 +1,5 @@
 import React from 'react';
-import usePushNotifications from '../hooks/usePushNotifications';
+import { usePushNotificationContext } from '../context/PushNotificationContext';
 
 const PushNotificationSettings = () => {
   const {
@@ -11,8 +11,9 @@ const PushNotificationSettings = () => {
     subscribe,
     unsubscribe,
     sendTestNotification,
+    refreshStatus,
     clearError
-  } = usePushNotifications();
+  } = usePushNotificationContext();
 
   const handleToggle = async () => {
     console.log('🔄 Cambiando estado de suscripción:', { isSubscribed, isLoading });
@@ -30,6 +31,14 @@ const PushNotificationSettings = () => {
       refreshStatus();
     }, 1000);
   };
+
+  // Refrescar estado al montar el componente
+  React.useEffect(() => {
+    if (isSupported && !isLoading) {
+      console.log('🔄 Refrescando estado de notificaciones al montar componente...');
+      refreshStatus();
+    }
+  }, [isSupported, isLoading, refreshStatus]);
 
   const handleTest = async () => {
     await sendTestNotification();

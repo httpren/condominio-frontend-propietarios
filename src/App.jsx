@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { PushNotificationProvider } from './context/PushNotificationContext'
 import MainLayout from './components/Layout/MainLayout'
 import LoginPage from './components/Auth/LoginPage'
 
@@ -44,9 +45,8 @@ function App() {
     
 
     <AuthProvider>
-
-
-      <Router>
+      <PushNotificationProvider>
+        <Router>
         <Routes>
           {/* Rutas públicas */}
           <Route path="/login" element={<LoginPage />} />
@@ -174,7 +174,8 @@ function App() {
           {/* Ruta 404 */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </Router>
+        </Router>
+      </PushNotificationProvider>
     </AuthProvider>
   )
 }

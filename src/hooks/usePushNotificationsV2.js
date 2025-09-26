@@ -318,10 +318,30 @@ export const usePushNotificationsV2 = () => {
     try {
       const status = await checkSubscriptionStatus();
       setIsSubscribed(status);
+      
+      // Sincronizar con localStorage
+      if (status) {
+        try {
+          const registration = await navigator.serviceWorker.ready;
+          const subscription = await registration.pushManager.getSubscription();
+          if (subscription) {
+            localStorage.setItem('push_notification_subscribed', 'true');
+            localStorage.setItem('push_notification_endpoint', subscription.endpoint);
+          }
+        } catch (error) {
+          console.warn('Error sincronizando con localStorage:', error);
+        }
+      } else {
+        localStorage.removeItem('push_notification_subscribed');
+        localStorage.removeItem('push_notification_endpoint');
+      }
+      
       addDebugInfo('statusRefresh', 'success');
     } catch (err) {
       console.error('Error verificando estado de suscripción:', err);
       setIsSubscribed(false);
+      localStorage.removeItem('push_notification_subscribed');
+      localStorage.removeItem('push_notification_endpoint');
       addDebugInfo('statusRefresh', 'error');
     }
   }, [isSupported, checkSubscriptionStatus]);
@@ -335,11 +355,39 @@ export const usePushNotificationsV2 = () => {
         
         // Verificar estado persistido primero
         const persistedState = localStorage.getItem('push_notification_subscribed') === 'true';
-        if (persistedState) {
+        const persistedEndpoint = localStorage.getItem('push_notification_endpoint');
+        
+        if (persistedState && persistedEndpoint) {
           console.log('🔄 Estado persistido encontrado, verificando suscripción...');
-          setIsSubscribed(true);
+          // Verificar que la suscripción local aún existe
+          try {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+            
+            if (subscription && subscription.endpoint === persistedEndpoint) {
+              console.log('✅ Suscripción local válida encontrada');
+              setIsSubscribed(true);
+              addDebugInfo('localSubscription', 'valid');
+            } else {
+              console.log('⚠️ Suscripción local no válida, limpiando estado persistido');
+              localStorage.removeItem('push_notification_subscribed');
+              localStorage.removeItem('push_notification_endpoint');
+              setIsSubscribed(false);
+              addDebugInfo('localSubscription', 'invalid');
+            }
+          } catch (error) {
+            console.error('Error verificando suscripción local:', error);
+            localStorage.removeItem('push_notification_subscribed');
+            localStorage.removeItem('push_notification_endpoint');
+            setIsSubscribed(false);
+            addDebugInfo('localSubscription', 'error');
+          }
+        } else {
+          console.log('📱 No hay estado persistido, verificando suscripción...');
+          setIsSubscribed(false);
         }
         
+        // Verificar estado real con el backend
         await refreshStatus();
       }
       

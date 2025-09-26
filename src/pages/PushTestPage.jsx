@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePushNotificationsV2 } from '../hooks/usePushNotificationsV2';
+import { usePushNotificationContext } from '../context/PushNotificationContext';
 
 const PushTestPage = () => {
   const {
@@ -14,7 +14,7 @@ const PushTestPage = () => {
     sendTestNotification,
     refreshStatus,
     clearError
-  } = usePushNotificationsV2();
+  } = usePushNotificationContext();
 
   const handleToggle = async () => {
     if (isSubscribed) {
