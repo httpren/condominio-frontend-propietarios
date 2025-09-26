@@ -22,6 +22,50 @@ export const PushNotificationProvider = ({ children }) => {
     }
   }, [pushNotificationState.isSupported, pushNotificationState.isLoading, pushNotificationState.refreshStatus]);
 
+  // Escuchar mensajes del Service Worker
+  useEffect(() => {
+    const handleServiceWorkerMessage = (event) => {
+      console.log('📱 Mensaje recibido del Service Worker:', event.data);
+      
+      if (event.data?.type === 'PUSH_NOTIFICATION_RECEIVED') {
+        console.log('🔔 Notificación push recibida:', event.data.data);
+        console.log('🔔 Tipo de notificación:', event.data.data?.type);
+        console.log('🔔 Título:', event.data.data?.titulo || event.data.data?.title);
+        
+        // Emitir evento personalizado para que otros componentes puedan escuchar
+        const customEvent = new CustomEvent('pushNotificationReceived', {
+          detail: event.data.data
+        });
+        console.log('📤 Emitiendo evento personalizado:', customEvent);
+        window.dispatchEvent(customEvent);
+      }
+      
+      if (event.data?.type === 'OPEN_COMUNICADO') {
+        console.log('📖 Abriendo comunicado:', event.data.id);
+        
+        // Emitir evento personalizado para abrir comunicado
+        const customEvent = new CustomEvent('openComunicado', {
+          detail: { id: event.data.id }
+        });
+        window.dispatchEvent(customEvent);
+      }
+    };
+
+    // Escuchar mensajes del Service Worker
+    if (navigator.serviceWorker) {
+      console.log('🔧 Configurando listener del Service Worker...');
+      navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+    } else {
+      console.log('⚠️ Service Worker no disponible');
+    }
+
+    return () => {
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
+      }
+    };
+  }, []);
+
   return (
     <PushNotificationContext.Provider value={pushNotificationState}>
       {children}

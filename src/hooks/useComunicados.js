@@ -87,36 +87,45 @@ const useComunicados = () => {
 
   // Escuchar eventos de push notifications
   useEffect(() => {
-    const handlePushNotification = async () => {
-      // Verificar si hay suscripción activa antes de refrescar
-      const isSubscribed = await checkSubscriptionStatus();
-      if (isSubscribed) {
-        console.log('📱 Push notification recibida, refrescando comunicados...');
-        fetchComunicados();
-        fetchResumen();
+    const handlePushNotification = async (event) => {
+      console.log('📱 Push notification recibida en useComunicados:', event.detail);
+      console.log('📱 Tipo de evento:', event.type);
+      console.log('📱 Detalle completo:', event.detail);
+      
+      // Verificar si es una notificación de comunicado
+      if (event.detail?.type === 'comunicado') {
+        console.log('📢 Notificación de comunicado recibida, refrescando...');
+        console.log('📢 ID del comunicado:', event.detail.id);
+        console.log('📢 Título:', event.detail.titulo || event.detail.title);
+        
+        // Pequeño delay para asegurar que el backend haya procesado el comunicado
+        setTimeout(() => {
+          console.log('🔄 Ejecutando refresh después de delay...');
+          fetchComunicados();
+          fetchResumen();
+        }, 1000);
+      } else {
+        console.log('⚠️ Notificación recibida pero no es de comunicado:', event.detail?.type);
       }
     };
 
-    // Escuchar mensajes del Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data?.type === 'PUSH_NOTIFICATION_RECEIVED') {
-          handlePushNotification();
-        }
-      });
-    }
-
-    // Escuchar eventos personalizados de comunicados
-    const handleComunicadoUpdate = (event) => {
-      if (event.detail?.type === 'push_notification') {
-        handlePushNotification();
-      }
+    // Escuchar eventos personalizados de push notifications
+    console.log('🔧 Configurando listener de pushNotificationReceived en useComunicados...');
+    window.addEventListener('pushNotificationReceived', handlePushNotification);
+    
+    // Escuchar eventos de refresh de comunicados
+    const handleRefreshComunicados = () => {
+      console.log('🔄 Refrescando comunicados por evento...');
+      fetchComunicados();
+      fetchResumen();
     };
-
-    window.addEventListener('comunicados:update', handleComunicadoUpdate);
+    
+    window.addEventListener('refreshComunicados', handleRefreshComunicados);
 
     return () => {
-      window.removeEventListener('comunicados:update', handleComunicadoUpdate);
+      console.log('🧹 Limpiando listeners en useComunicados...');
+      window.removeEventListener('pushNotificationReceived', handlePushNotification);
+      window.removeEventListener('refreshComunicados', handleRefreshComunicados);
     };
   }, [fetchComunicados, fetchResumen]);
 

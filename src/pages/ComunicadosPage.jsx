@@ -5,6 +5,7 @@ import Table from '../components/common/Table';
 import Badge from '../components/common/Badge';
 import Button from '../components/common/Button';
 import useComunicados from '../hooks/useComunicados';
+import { usePushNotificationListener } from '../hooks/usePushNotificationListener';
 import { Bell, Check } from 'lucide-react';
 import { registrarPush } from '../utils/push';
 
@@ -18,10 +19,12 @@ const tipoConfig = {
 
 const ComunicadosPage = () => {
   const { comunicados, loading, error, resumen, setFiltroLeidos, setFiltroTipo, marcarLeido } = useComunicados();
+  const { refreshComunicados } = usePushNotificationListener();
   const [soloNoLeidos, setSoloNoLeidos] = useState(false);
   const [tipoSel, setTipoSel] = useState('');
   const [selected, setSelected] = useState(null);
   const [pushStatus, setPushStatus] = useState(null); // null | 'ok' | 'error' | 'ya'
+  const [newNotification, setNewNotification] = useState(null);
   const VAPID_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY; // asumir variable
 
   const columns = [
@@ -100,6 +103,31 @@ const ComunicadosPage = () => {
     }
   }, [comunicados]);
 
+  // Escuchar notificaciones push para mostrar indicador visual
+  useEffect(() => {
+    const handlePushNotification = (event) => {
+      if (event.detail?.type === 'comunicado') {
+        console.log('📢 Nueva notificación de comunicado recibida en la página');
+        setNewNotification({
+          titulo: event.detail.titulo || event.detail.title,
+          id: event.detail.id,
+          timestamp: new Date().toLocaleTimeString()
+        });
+        
+        // Limpiar el indicador después de 5 segundos
+        setTimeout(() => {
+          setNewNotification(null);
+        }, 5000);
+      }
+    };
+
+    window.addEventListener('pushNotificationReceived', handlePushNotification);
+
+    return () => {
+      window.removeEventListener('pushNotificationReceived', handlePushNotification);
+    };
+  }, []);
+
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHeader
@@ -142,6 +170,26 @@ const ComunicadosPage = () => {
       </div>
 
       {error && <div className="alert-error">{error}</div>}
+
+      {/* Indicador de nueva notificación */}
+      {newNotification && (
+        <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 mb-4 animate-pulse">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+            <div>
+              <p className="text-green-400 font-medium">¡Nuevo comunicado recibido!</p>
+              <p className="text-green-300 text-sm">{newNotification.titulo}</p>
+              <p className="text-green-400/60 text-xs">{newNotification.timestamp}</p>
+            </div>
+            <button 
+              onClick={() => setNewNotification(null)}
+              className="ml-auto text-green-400/60 hover:text-green-400"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       <Table
         columns={columns}
