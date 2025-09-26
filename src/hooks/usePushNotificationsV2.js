@@ -1,6 +1,37 @@
 import { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '../api/axiosConfig';
 
+// Función para convertir clave VAPID de base64url a Uint8Array
+function urlBase64ToUint8Array(base64String) {
+  if (!base64String) {
+    throw new Error('base64String es requerido');
+  }
+
+  try {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    
+    let rawData;
+    if (typeof atob !== 'undefined') {
+      rawData = atob(base64);
+    } else if (typeof Buffer !== 'undefined') {
+      rawData = Buffer.from(base64, 'base64').toString('binary');
+    } else {
+      throw new Error('No se encontró método para decodificar base64');
+    }
+    
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    
+    return outputArray;
+  } catch (error) {
+    console.error('Error convirtiendo base64:', error);
+    throw new Error(`Error al convertir clave VAPID: ${error.message}`);
+  }
+}
+
 export const usePushNotificationsV2 = () => {
   const [isSupported, setIsSupported] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -110,9 +141,16 @@ export const usePushNotificationsV2 = () => {
       const registration = await navigator.serviceWorker.ready;
       addDebugInfo('serviceWorker', 'ready');
       
-      // 3. Convertir clave VAPID
-      const vapidKeyBytes = Uint8Array.from(atob(vapidKey), c => c.charCodeAt(0));
-      addDebugInfo('vapidConversion', 'success');
+       // 3. Convertir clave VAPID
+       let vapidKeyBytes;
+       try {
+         vapidKeyBytes = urlBase64ToUint8Array(vapidKey);
+         addDebugInfo('vapidConversion', 'success');
+       } catch (conversionError) {
+         console.error('Error convirtiendo clave VAPID:', conversionError);
+         addDebugInfo('vapidConversion', 'error');
+         throw new Error('Error convirtiendo clave VAPID: ' + conversionError.message);
+       }
       
       // 4. Crear suscripción
       const subscription = await registration.pushManager.subscribe({
