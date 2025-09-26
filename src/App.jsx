@@ -19,6 +19,7 @@ import ReservasPage from './pages/ReservasPage'
 import ComunicadosPage from './pages/ComunicadosPage'
 import ReportesPage from './pages/ReportesPage'
 import ComunicadoDetallePage from './pages/ComunicadoDetallePage'
+import PushTestPage from './pages/PushTestPage'
 
 // Debug components
 import ApiTest from './components/Debug/ApiTest'
@@ -50,6 +51,7 @@ function App() {
           {/* Rutas públicas */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/push-debug" element={<PushDebug />} />
+          <Route path="/push-test" element={<PushTestPage />} />
           {/* Rutas protegidas */}
           <Route
             path="/dashboard"

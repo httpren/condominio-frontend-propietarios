@@ -35,6 +35,10 @@ export const usePushNotificationsV2 = () => {
     }
   }, []);
 
+  const isPushSupported = useCallback(() => {
+    return 'serviceWorker' in navigator && 'PushManager' in window;
+  }, []);
+
   const checkSubscriptionStatus = useCallback(async () => {
     if (!isPushSupported()) return false;
     
