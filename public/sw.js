@@ -131,6 +131,9 @@ self.addEventListener('push', function(event) {
   try {
     data = event.data.json();
     console.log('📱 Push data parseado:', data);
+    console.log('📱 Tipo de notificación:', data.data?.type || data.type);
+    console.log('📱 Título:', data.title || data.titulo);
+    console.log('📱 Mensaje:', data.body || data.mensaje);
   } catch (error) {
     console.error('❌ Error parsing push data:', error);
     return;
@@ -139,16 +142,17 @@ self.addEventListener('push', function(event) {
   console.log('📱 Push notification recibida:', data);
   
   // Procesar según el tipo de notificación
-  if (data.type === 'comunicado') {
+  if (data.data?.type === 'comunicado' || data.type === 'comunicado') {
+    const notificationData = data.data || data;
     const options = {
-      body: data.mensaje || 'Nuevo comunicado disponible',
-      icon: '/icons/icon-144x144.png',
-      badge: '/icons/icon-144x144.png',
-      tag: `comunicado-${data.id}`,
+      body: data.body || data.mensaje || 'Nuevo comunicado disponible',
+      icon: data.icon || '/icons/icon-144x144.png',
+      badge: data.badge || '/icons/icon-144x144.png',
+      tag: `comunicado-${notificationData.id}`,
       data: {
-        type: data.type,
-        id: data.id,
-        url: `/comunicados`
+        type: notificationData.type,
+        id: notificationData.id,
+        url: notificationData.url || `/comunicados/${notificationData.id}`
       },
       actions: [
         {
@@ -161,8 +165,56 @@ self.addEventListener('push', function(event) {
       requireInteraction: true
     };
 
+    console.log('📱 Mostrando notificación de comunicado:', {
+      title: data.title || data.titulo || 'Nuevo Comunicado',
+      options: options
+    });
+
     event.waitUntil(
-      self.registration.showNotification(data.titulo || 'Nuevo Comunicado', options)
+      self.registration.showNotification(data.title || data.titulo || 'Nuevo Comunicado', options)
+        .then(() => {
+          console.log('✅ Notificación de comunicado mostrada exitosamente');
+          // Notificar a la aplicación que se recibió una push notification
+          return self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        })
+        .then((clients) => {
+          console.log('📱 Clientes encontrados:', clients.length);
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'PUSH_NOTIFICATION_RECEIVED',
+              data: data
+            });
+          });
+        })
+        .catch(error => {
+          console.error('❌ Error mostrando notificación:', error);
+        })
+    );
+  } else if (data.data?.type === 'pago' || data.type === 'pago') {
+    const notificationData = data.data || data;
+    const options = {
+      body: data.body || data.mensaje || 'Pago confirmado',
+      icon: data.icon || '/icons/icon-144x144.png',
+      badge: data.badge || '/icons/icon-144x144.png',
+      tag: `pago-${notificationData.id}`,
+      data: {
+        type: notificationData.type,
+        id: notificationData.id,
+        url: notificationData.url || `/pagos`
+      },
+      actions: [
+        {
+          action: 'view',
+          title: 'Ver pago',
+          icon: '/icons/icon-144x144.png'
+        }
+      ],
+      vibrate: [200, 100, 200],
+      requireInteraction: true
+    };
+
+    event.waitUntil(
+      self.registration.showNotification(data.title || data.titulo || 'Pago Confirmado', options)
         .then(() => {
           // Notificar a la aplicación que se recibió una push notification
           return self.clients.matchAll({ type: 'window', includeUncontrolled: true });
@@ -176,7 +228,7 @@ self.addEventListener('push', function(event) {
           });
         })
         .catch(error => {
-          console.error('Error mostrando notificación:', error);
+          console.error('Error mostrando notificación de pago:', error);
         })
     );
   }
