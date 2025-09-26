@@ -15,11 +15,20 @@ const PushNotificationSettings = () => {
   } = usePushNotifications();
 
   const handleToggle = async () => {
+    console.log('🔄 Cambiando estado de suscripción:', { isSubscribed, isLoading });
+    
     if (isSubscribed) {
-      await unsubscribe();
+      const result = await unsubscribe();
+      console.log('📤 Resultado desuscripción:', result);
     } else {
-      await subscribe();
+      const result = await subscribe();
+      console.log('📤 Resultado suscripción:', result);
     }
+    
+    // Refrescar estado después de la operación
+    setTimeout(() => {
+      refreshStatus();
+    }, 1000);
   };
 
   const handleTest = async () => {
@@ -149,6 +158,19 @@ const PushNotificationSettings = () => {
           <p>• Las notificaciones requieren permisos del navegador</p>
           <p>• Funciona mejor en dispositivos móviles</p>
           <p>• Se requiere conexión HTTPS para funcionar</p>
+        </div>
+
+        {/* Debug info */}
+        <div className="mt-4 p-3 bg-gray-100 rounded-md text-xs">
+          <p className="font-medium text-gray-700 mb-2">Debug Info:</p>
+          <div className="space-y-1 text-gray-600">
+            <p>• Soportado: {isSupported ? '✅' : '❌'}</p>
+            <p>• Suscrito: {isSubscribed ? '✅' : '❌'}</p>
+            <p>• Cargando: {isLoading ? '⏳' : '✅'}</p>
+            <p>• Clave VAPID: {vapidKey ? '✅' : '❌'}</p>
+            <p>• Origen: {window.location.origin}</p>
+            <p>• Contexto seguro: {window.isSecureContext ? '✅' : '❌'}</p>
+          </div>
         </div>
       </div>
     </div>

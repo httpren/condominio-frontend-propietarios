@@ -57,7 +57,36 @@ export const checkSubscriptionStatus = async () => {
   try {
     const registration = await navigator.serviceWorker.ready;
     const subscription = await registration.pushManager.getSubscription();
-    return !!subscription;
+    
+    if (!subscription) {
+      console.log('🔍 No hay suscripción local');
+      return false;
+    }
+    
+    // Verificar si el backend reconoce esta suscripción
+    try {
+      const response = await axiosInstance.get('/push-subscriptions/');
+      let userSubs = [];
+      if (Array.isArray(response.data)) {
+        userSubs = response.data;
+      } else if (response.data && Array.isArray(response.data.results)) {
+        userSubs = response.data.results;
+      }
+      
+      const currentEndpoint = subscription.endpoint;
+      const isValid = userSubs.some(sub => sub.endpoint === currentEndpoint && sub.activo === true);
+      
+      console.log('🔍 Verificando suscripción en backend:', {
+        localEndpoint: currentEndpoint.substring(0, 50) + '...',
+        backendSubs: userSubs.length,
+        isValid
+      });
+      
+      return isValid;
+    } catch (backendError) {
+      console.warn('⚠️ Error verificando backend, asumiendo suscripción válida:', backendError);
+      return true; // Si no podemos verificar el backend, asumir que está bien
+    }
   } catch (error) {
     console.error('Error checking subscription:', error);
     return false;

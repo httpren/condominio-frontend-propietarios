@@ -24,13 +24,23 @@ export const usePushNotifications = () => {
 
   // Verificar soporte y estado inicial
   useEffect(() => {
-    const checkSupport = () => {
+    const checkSupport = async () => {
       const supported = isPushSupported();
       setIsSupported(supported);
       
       if (supported) {
-        checkSubscriptionStatus().then(setIsSubscribed);
-        fetchVapidKey();
+        // Obtener clave VAPID primero
+        await fetchVapidKey();
+        
+        // Verificar estado de suscripción
+        try {
+          const isSubscribed = await checkSubscriptionStatus();
+          console.log('🔍 Estado inicial de suscripción:', isSubscribed);
+          setIsSubscribed(isSubscribed);
+        } catch (error) {
+          console.error('Error verificando estado de suscripción:', error);
+          setIsSubscribed(false);
+        }
       }
     };
 
