@@ -79,7 +79,8 @@ export const checkSubscriptionStatus = async () => {
       console.log('🔍 Verificando suscripción en backend:', {
         localEndpoint: currentEndpoint.substring(0, 50) + '...',
         backendSubs: userSubs.length,
-        isValid
+        isValid,
+        currentOrigin: window.location.origin
       });
       
       return isValid;

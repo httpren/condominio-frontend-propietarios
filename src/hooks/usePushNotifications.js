@@ -129,9 +129,11 @@ export const usePushNotifications = () => {
     
     try {
       const status = await checkSubscriptionStatus();
+      console.log('🔄 Refrescando estado de suscripción:', status);
       setIsSubscribed(status);
     } catch (err) {
       console.error('Error verificando estado de suscripción:', err);
+      setIsSubscribed(false);
     }
   }, [isSupported]);
 
