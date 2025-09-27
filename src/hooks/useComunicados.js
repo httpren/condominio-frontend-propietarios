@@ -97,6 +97,7 @@ const useComunicados = () => {
         console.log('📢 Notificación de comunicado recibida, refrescando...');
         console.log('📢 ID del comunicado:', event.detail.id);
         console.log('📢 Título:', event.detail.titulo || event.detail.title);
+        console.log('📢 Es masivo:', event.detail.es_masivo);
         
         // Pequeño delay para asegurar que el backend haya procesado el comunicado
         setTimeout(() => {
@@ -109,9 +110,25 @@ const useComunicados = () => {
       }
     };
 
+    const handleComunicadoReceived = async (event) => {
+      console.log('📢 Comunicado específico recibido en useComunicados:', event.detail);
+      console.log('📢 ID del comunicado:', event.detail.id);
+      console.log('📢 Título:', event.detail.titulo || event.detail.title);
+      console.log('📢 Es masivo:', event.detail.es_masivo);
+      
+      // Refrescar inmediatamente para comunicados específicos
+      console.log('🔄 Refrescando comunicados por evento de comunicado...');
+      fetchComunicados();
+      fetchResumen();
+    };
+
     // Escuchar eventos personalizados de push notifications
     console.log('🔧 Configurando listener de pushNotificationReceived en useComunicados...');
     window.addEventListener('pushNotificationReceived', handlePushNotification);
+    
+    // Escuchar eventos específicos de comunicados
+    console.log('🔧 Configurando listener de comunicadoReceived en useComunicados...');
+    window.addEventListener('comunicadoReceived', handleComunicadoReceived);
     
     // Escuchar eventos de refresh de comunicados
     const handleRefreshComunicados = () => {
@@ -125,6 +142,7 @@ const useComunicados = () => {
     return () => {
       console.log('🧹 Limpiando listeners en useComunicados...');
       window.removeEventListener('pushNotificationReceived', handlePushNotification);
+      window.removeEventListener('comunicadoReceived', handleComunicadoReceived);
       window.removeEventListener('refreshComunicados', handleRefreshComunicados);
     };
   }, [fetchComunicados, fetchResumen]);

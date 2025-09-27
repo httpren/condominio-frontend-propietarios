@@ -121,6 +121,7 @@ self.addEventListener('message', (event) => {
 // Push notifications para comunicados
 self.addEventListener('push', function(event) {
   console.log('📱 Push event recibido:', event);
+  console.log('📱 Event data:', event.data);
   
   if (!event.data) {
     console.log('⚠️ Push event sin datos');
@@ -136,7 +137,18 @@ self.addEventListener('push', function(event) {
     console.log('📱 Mensaje:', data.body || data.mensaje);
   } catch (error) {
     console.error('❌ Error parsing push data:', error);
-    return;
+    // Intentar parsear como texto si falla el JSON
+    try {
+      data = { 
+        title: 'Nueva notificación',
+        body: event.data.text(),
+        type: 'comunicado'
+      };
+      console.log('📱 Parseado como texto:', data);
+    } catch (textError) {
+      console.error('❌ Error parsing push data como texto:', textError);
+      return;
+    }
   }
   
   console.log('📱 Push notification recibida:', data);
@@ -148,11 +160,11 @@ self.addEventListener('push', function(event) {
       body: data.body || data.mensaje || 'Nuevo comunicado disponible',
       icon: data.icon || '/icons/icon-144x144.png',
       badge: data.badge || '/icons/icon-144x144.png',
-      tag: `comunicado-${notificationData.id}`,
+      tag: `comunicado-${notificationData.id || 'unknown'}`,
       data: {
-        type: notificationData.type,
-        id: notificationData.id,
-        url: notificationData.url || `/comunicados/${notificationData.id}`
+        type: notificationData.type || 'comunicado',
+        id: notificationData.id || 'unknown',
+        url: notificationData.url || `/comunicados/${notificationData.id || ''}`
       },
       actions: [
         {
@@ -180,6 +192,7 @@ self.addEventListener('push', function(event) {
         .then((clients) => {
           console.log('📱 Clientes encontrados:', clients.length);
           clients.forEach(client => {
+            console.log('📱 Enviando mensaje a cliente:', client.url);
             client.postMessage({
               type: 'PUSH_NOTIFICATION_RECEIVED',
               data: data
@@ -196,10 +209,10 @@ self.addEventListener('push', function(event) {
       body: data.body || data.mensaje || 'Pago confirmado',
       icon: data.icon || '/icons/icon-144x144.png',
       badge: data.badge || '/icons/icon-144x144.png',
-      tag: `pago-${notificationData.id}`,
+      tag: `pago-${notificationData.id || 'unknown'}`,
       data: {
-        type: notificationData.type,
-        id: notificationData.id,
+        type: notificationData.type || 'pago',
+        id: notificationData.id || 'unknown',
         url: notificationData.url || `/pagos`
       },
       actions: [
@@ -229,6 +242,41 @@ self.addEventListener('push', function(event) {
         })
         .catch(error => {
           console.error('Error mostrando notificación de pago:', error);
+        })
+    );
+  } else {
+    // Manejar notificaciones de otros tipos
+    console.log('📱 Notificación de tipo desconocido:', data.type || 'unknown');
+    const options = {
+      body: data.body || data.mensaje || 'Nueva notificación',
+      icon: data.icon || '/icons/icon-144x144.png',
+      badge: data.badge || '/icons/icon-144x144.png',
+      tag: `notification-${Date.now()}`,
+      data: {
+        type: data.type || 'general',
+        id: data.id || 'unknown',
+        url: data.url || '/'
+      },
+      vibrate: [200, 100, 200],
+      requireInteraction: true
+    };
+
+    event.waitUntil(
+      self.registration.showNotification(data.title || data.titulo || 'Nueva Notificación', options)
+        .then(() => {
+          console.log('✅ Notificación mostrada exitosamente');
+          return self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        })
+        .then((clients) => {
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'PUSH_NOTIFICATION_RECEIVED',
+              data: data
+            });
+          });
+        })
+        .catch(error => {
+          console.error('❌ Error mostrando notificación:', error);
         })
     );
   }

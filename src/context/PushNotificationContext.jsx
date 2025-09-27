@@ -26,11 +26,15 @@ export const PushNotificationProvider = ({ children }) => {
   useEffect(() => {
     const handleServiceWorkerMessage = (event) => {
       console.log('📱 Mensaje recibido del Service Worker:', event.data);
+      console.log('📱 Tipo de mensaje:', event.data?.type);
+      console.log('📱 Datos completos:', event.data);
       
       if (event.data?.type === 'PUSH_NOTIFICATION_RECEIVED') {
         console.log('🔔 Notificación push recibida:', event.data.data);
         console.log('🔔 Tipo de notificación:', event.data.data?.type);
         console.log('🔔 Título:', event.data.data?.titulo || event.data.data?.title);
+        console.log('🔔 ID:', event.data.data?.id);
+        console.log('🔔 Es masivo:', event.data.data?.es_masivo);
         
         // Emitir evento personalizado para que otros componentes puedan escuchar
         const customEvent = new CustomEvent('pushNotificationReceived', {
@@ -38,6 +42,15 @@ export const PushNotificationProvider = ({ children }) => {
         });
         console.log('📤 Emitiendo evento personalizado:', customEvent);
         window.dispatchEvent(customEvent);
+        
+        // También emitir un evento específico para comunicados
+        if (event.data.data?.type === 'comunicado') {
+          const comunicadoEvent = new CustomEvent('comunicadoReceived', {
+            detail: event.data.data
+          });
+          console.log('📤 Emitiendo evento de comunicado:', comunicadoEvent);
+          window.dispatchEvent(comunicadoEvent);
+        }
       }
       
       if (event.data?.type === 'OPEN_COMUNICADO') {
@@ -55,6 +68,11 @@ export const PushNotificationProvider = ({ children }) => {
     if (navigator.serviceWorker) {
       console.log('🔧 Configurando listener del Service Worker...');
       navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+      
+      // También escuchar cuando el service worker esté listo
+      navigator.serviceWorker.ready.then((registration) => {
+        console.log('✅ Service Worker listo para recibir mensajes');
+      });
     } else {
       console.log('⚠️ Service Worker no disponible');
     }

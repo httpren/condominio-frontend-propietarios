@@ -68,3 +68,4 @@ export const checkServiceWorkerStatus = async () => {
   }
   return false;
 };
+
