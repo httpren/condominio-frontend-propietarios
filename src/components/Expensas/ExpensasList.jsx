@@ -5,7 +5,6 @@ import useExpensas from '../../hooks/useExpensas';
 import usePropietario from '../../hooks/usePropietario';
 // PaymentModal eliminado: reemplazado por ExpensaDetailModal
 import ExpensaDetailModal from './ExpensaDetailModal';
-import RegistrarPagoModal from './RegistrarPagoModal';
 import Pagination from '../common/Pagination';
 import PageHeader from '../common/PageHeader';
 import StatsGrid from '../common/StatsGrid';
@@ -35,7 +34,7 @@ const ExpensasList = () => {
   const { perfil, fetchPerfil } = usePropietario();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedExpensa, setSelectedExpensa] = useState(null); // para ver detalle
-  const [pagoExpensa, setPagoExpensa] = useState(null); // para registrar pago
+  // Eliminamos modal de pago: ahora se usa página pasarela
   const [feedback, setFeedback] = useState(null);
 
   const stats = computeStats();
@@ -151,7 +150,7 @@ const ExpensasList = () => {
               variant="primary"
               size="xs"
               icon={DollarSign}
-              onClick={() => setPagoExpensa(row)}
+              onClick={() => navigate(`/pagos/crear?expensa=${row.id}`)}
             >
               Pagar
             </Button>
@@ -328,15 +327,7 @@ const ExpensasList = () => {
         />
       )}
 
-      {/* Modal registrar pago */}
-      {pagoExpensa && (
-        <RegistrarPagoModal
-          expensa={pagoExpensa}
-          isOpen={!!pagoExpensa}
-          onClose={() => setPagoExpensa(null)}
-          onPagoCreado={() => { setPagoExpensa(null); fetchExpensas(); fetchPerfil(); setFeedback({ type: 'success', message: 'Pago registrado correctamente' }); }}
-        />
-      )}
+      {/* Pasarela de pago ahora es una página (/pagos/crear) */}
     </div>
   );
 };

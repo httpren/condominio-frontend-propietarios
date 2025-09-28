@@ -24,6 +24,7 @@ import PushTestPage from './pages/PushTestPage'
 import PushNotificationDebugPage from './pages/PushNotificationDebugPage'
 import CrearVisitaPage from './pages/CrearVisitaPage'
 import CrearReservaPage from './pages/CrearReservaPage'
+import CrearPagoPage from './pages/CrearPagoPage'
 
 // Debug components
 import ApiTest from './components/Debug/ApiTest'
@@ -178,6 +179,16 @@ function App() {
             element={
               <ProtectedLayout>
                 <CrearReservaPage />
+              </ProtectedLayout>
+            }
+          />
+
+          {/* Pasarela Pago */}
+          <Route
+            path="/pagos/crear"
+            element={
+              <ProtectedLayout>
+                <CrearPagoPage />
               </ProtectedLayout>
             }
           />
