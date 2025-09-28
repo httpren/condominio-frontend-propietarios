@@ -1,96 +1,19 @@
 import React, { useState, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserCheck, Plus, Trash2, Edit2, QrCode, Calendar, Clock, Users } from 'lucide-react';
 import VisitQrModal from './VisitQrModal';
 import useVisitas from '../../hooks/useVisitas';
 import PageHeader from '../common/PageHeader';
 import Table from '../common/Table';
-import Modal from '../common/Modal';
-import Input from '../common/Input';
 import Button from '../common/Button';
 import Badge from '../common/Badge';
 import StatsGrid from '../common/StatsGrid';
 
-const initialForm = { nombre_visitante: '', documento_visitante: '', fecha: '' };
-
 const VisitasList = () => {
-  const { visitas, loading, error, createVisita, updateVisita, deleteVisita } = useVisitas();
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState(initialForm);
-  const [editingId, setEditingId] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { visitas, loading, error, deleteVisita } = useVisitas();
   const [feedback, setFeedback] = useState(null);
   const [qrModal, setQrModal] = useState({ open: false, code: '' });
-
-  const resetForm = useCallback(() => { 
-    setFormData(initialForm); 
-    setEditingId(null); 
-  }, []);
-  
-  const openCreate = useCallback(() => { 
-    resetForm(); 
-    setShowForm(true); 
-  }, [resetForm]);
-  
-  const openEdit = useCallback((v) => {
-    setFormData({
-      nombre_visitante: v.nombre_visitante || v.nombre || '',
-      documento_visitante: v.documento_visitante || '',
-      fecha: v.fecha || v.fecha_visita || ''
-    });
-    setEditingId(v.id);
-    setShowForm(true);
-  }, []);
-
-  const handleChange = useCallback((e) => { 
-    const { name, value } = e.target; 
-    setFormData(p => ({ ...p, [name]: value })); 
-  }, []);
-
-  const validate = useCallback(() => {
-    if (!formData.fecha) return 'Fecha requerida';
-    const d = new Date(formData.fecha);
-    if (isNaN(d.getTime())) return 'Fecha inválida';
-    const now = new Date();
-    if (d < now) return 'La fecha debe ser futura';
-    if (!formData.nombre_visitante) return 'Nombre requerido';
-    return null;
-  }, [formData]);
-
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    const valErr = validate();
-    if (valErr) { 
-      setFeedback({ type: 'error', message: valErr }); 
-      return; 
-    }
-    
-    setSubmitting(true);
-    setFeedback(null);
-    const payload = {
-      nombre_visitante: formData.nombre_visitante,
-      documento_visitante: formData.documento_visitante,
-      fecha: formData.fecha
-    };
-    
-    const action = editingId ? updateVisita(editingId, payload) : createVisita(payload);
-    const result = await action;
-    
-    if (result.success) {
-      const base = editingId ? 'Visita actualizada exitosamente' : 'Visita registrada exitosamente';
-      const message = result.offlinePending ? `${base} (pendiente de sincronizar)` : base;
-      setFeedback({ type: 'success', message });
-      setShowForm(false);
-      resetForm();
-      
-      // Si se creó online y hay qr_code, mostrar modal con QR
-      if (!editingId && !result.offlinePending && result.data?.qr_code) {
-        setQrModal({ open: true, code: result.data.qr_code });
-      }
-    } else {
-      setFeedback({ type: 'error', message: result.error || 'Error al procesar la visita' });
-    }
-    setSubmitting(false);
-  }, [formData, validate, editingId, updateVisita, createVisita, resetForm]);
 
   const handleDelete = useCallback(async (v) => {
     if (!window.confirm('¿Cancelar / eliminar esta visita?')) return;
@@ -161,9 +84,6 @@ const VisitasList = () => {
       className: 'text-right',
       cellClassName: 'text-right',
       render: (_, row) => {
-        const fecha = row.fecha || row.fecha_visita;
-        const futura = fecha && isFutura(fecha);
-        
         return (
           <div className="flex items-center gap-2 justify-end">
             {row.qr_code && (
@@ -172,14 +92,6 @@ const VisitasList = () => {
                 icon={QrCode}
                 onClick={() => setQrModal({ open: true, code: row.qr_code })}
                 title="Ver código QR"
-              />
-            )}
-            {futura && (
-              <Button
-                variant="icon"
-                icon={Edit2}
-                onClick={() => openEdit(row)}
-                title="Editar visita"
               />
             )}
             <Button
@@ -193,7 +105,7 @@ const VisitasList = () => {
         );
       },
     },
-  ], [isFutura, openEdit, handleDelete]);
+  ], [handleDelete]);
 
   // Estadísticas
   const statsData = useMemo(() => {
@@ -237,11 +149,11 @@ const VisitasList = () => {
     <Button
       variant="secondary"
       icon={Plus}
-      onClick={openCreate}
+      onClick={() => navigate('/visitas/crear')}
     >
       Nueva Visita
     </Button>
-  ), [openCreate]);
+  ), [navigate]);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -274,79 +186,6 @@ const VisitasList = () => {
         loading={loading}
         emptyMessage="No hay visitas registradas"
       />
-
-      {/* Modal de formulario */}
-      <Modal
-        isOpen={showForm}
-        onClose={() => { 
-          setShowForm(false); 
-          resetForm(); 
-          setFeedback(null);
-        }}
-        title={editingId ? 'Editar Visita' : 'Nueva Visita'}
-        size="md"
-      >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            id="nombre_visitante"
-            label="Nombre del Visitante"
-            name="nombre_visitante"
-            value={formData.nombre_visitante}
-            onChange={handleChange}
-            placeholder="Nombre completo del visitante"
-            required
-          />
-          
-          <Input
-            id="documento_visitante"
-            label="Documento de Identidad"
-            name="documento_visitante"
-            value={formData.documento_visitante}
-            onChange={handleChange}
-            placeholder="Número de documento (opcional)"
-          />
-          
-          <Input
-            id="fecha_visita"
-            label="Fecha y Hora de Visita"
-            type="datetime-local"
-            name="fecha"
-            value={formData.fecha}
-            onChange={handleChange}
-            required
-          />
-
-          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
-            <p className="text-blue-300 text-sm">
-              <strong>Información importante:</strong> Se generará un código QR automáticamente para que el visitante 
-              pueda ingresar. La fecha debe ser futura y se recomienda incluir el documento para mayor seguridad.
-            </p>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4">
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={() => { 
-                setShowForm(false); 
-                resetForm(); 
-                setFeedback(null);
-              }}
-              disabled={submitting}
-            >
-              Cancelar
-            </Button>
-            
-            <Button
-              type="submit"
-              loading={submitting}
-              icon={editingId ? Edit2 : Plus}
-            >
-              {editingId ? 'Guardar Cambios' : 'Registrar Visita'}
-            </Button>
-          </div>
-        </form>
-      </Modal>
 
       {/* Modal QR */}
       <VisitQrModal

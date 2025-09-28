@@ -22,6 +22,8 @@ import ReportesPage from './pages/ReportesPage'
 import ComunicadoDetallePage from './pages/ComunicadoDetallePage'
 import PushTestPage from './pages/PushTestPage'
 import PushNotificationDebugPage from './pages/PushNotificationDebugPage'
+import CrearVisitaPage from './pages/CrearVisitaPage'
+import CrearReservaPage from './pages/CrearReservaPage'
 
 // Debug components
 import ApiTest from './components/Debug/ApiTest'
@@ -156,6 +158,26 @@ function App() {
             element={
               <ProtectedLayout>
                 <ComunicadoDetallePage />
+              </ProtectedLayout>
+            }
+          />
+
+          {/* Crear Visita */}
+          <Route
+            path="/visitas/crear"
+            element={
+              <ProtectedLayout>
+                <CrearVisitaPage />
+              </ProtectedLayout>
+            }
+          />
+
+          {/* Crear Reserva */}
+          <Route
+            path="/reservas/crear"
+            element={
+              <ProtectedLayout>
+                <CrearReservaPage />
               </ProtectedLayout>
             }
           />
