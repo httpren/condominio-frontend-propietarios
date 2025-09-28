@@ -322,8 +322,7 @@ const ExpensasList = () => {
       {selectedExpensa && (
         <ExpensaDetailModal
           expensa={selectedExpensa}
-          onClose={() => { setSelectedExpensa(null); setFeedback(null); }}
-          onOpenPago={(exp) => { setSelectedExpensa(null); setPagoExpensa(exp); }}
+            onClose={() => { setSelectedExpensa(null); setFeedback(null); }}
         />
       )}
 

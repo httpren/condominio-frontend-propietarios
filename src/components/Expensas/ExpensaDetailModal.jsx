@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from '../common/Modal';
 import Badge from '../common/Badge';
 import Button from '../common/Button';
 import usePagos from '../../hooks/usePagos';
-import { Loader2, RefreshCw, AlertTriangle, Check, Plus } from 'lucide-react';
+import { RefreshCw, AlertTriangle, Check, DollarSign } from 'lucide-react';
 
 // Modal de detalle de expensa (sin formulario de pago)
-export default function ExpensaDetailModal({ expensa, onClose, onOpenPago }) {
+export default function ExpensaDetailModal({ expensa, onClose }) {
   const [activeTab, setActiveTab] = useState('pendientes'); // 'pendientes' | 'verificados'
   const { pagos, verificados, pendientes, loading, fetchPagos } = usePagos(expensa?.id, { polling: true });
+  const navigate = useNavigate();
 
   const total = Number(expensa.total) || 0;
   const pagadoVer = Number(expensa.total_pagado_verificado) || 0;
@@ -27,13 +29,28 @@ export default function ExpensaDetailModal({ expensa, onClose, onOpenPago }) {
   const titulo = `Expensa ${new Date(expensa.mes_referencia).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}`;
 
   const footer = !expensa.pagado ? (
-    <div className="flex justify-end">
-      <Button variant="secondary" size="sm" icon={Plus} onClick={() => onOpenPago?.(expensa)}>
-        Registrar pago
-      </Button>
+    <div className="flex justify-between gap-2 flex-wrap">
+      <div className="text-[11px] text-white/40 flex items-center gap-2">
+        <span>Para registrar un pago parcial o total usa la pasarela.</span>
+      </div>
+      <div className="flex gap-2 ml-auto">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => navigate(`/pagos/crear?expensa=${expensa.id}`)}
+          icon={DollarSign}
+        >
+          Pagar
+        </Button>
+      </div>
     </div>
   ) : (
-    <div className="text-center text-[11px] text-emerald-400 font-medium">Expensa completada</div>
+    <div className="flex justify-between items-center w-full">
+      <div className="text-center text-[11px] text-emerald-400 font-medium">Expensa completada</div>
+      <Button variant="secondary" size="sm" onClick={() => navigate(`/pagos/crear?expensa=${expensa.id}`)} disabled>
+        Pagar
+      </Button>
+    </div>
   );
 
   return (
