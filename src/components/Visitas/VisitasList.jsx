@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { UserCheck, Plus, Trash2, Edit2, QrCode, Calendar, Clock, Users } from 'lucide-react';
 import VisitQrModal from './VisitQrModal';
 import useVisitas from '../../hooks/useVisitas';
@@ -21,17 +21,17 @@ const VisitasList = () => {
   const [feedback, setFeedback] = useState(null);
   const [qrModal, setQrModal] = useState({ open: false, code: '' });
 
-  const resetForm = () => { 
+  const resetForm = useCallback(() => { 
     setFormData(initialForm); 
     setEditingId(null); 
-  };
+  }, []);
   
-  const openCreate = () => { 
+  const openCreate = useCallback(() => { 
     resetForm(); 
     setShowForm(true); 
-  };
+  }, [resetForm]);
   
-  const openEdit = (v) => {
+  const openEdit = useCallback((v) => {
     setFormData({
       nombre_visitante: v.nombre_visitante || v.nombre || '',
       documento_visitante: v.documento_visitante || '',
@@ -39,14 +39,14 @@ const VisitasList = () => {
     });
     setEditingId(v.id);
     setShowForm(true);
-  };
+  }, []);
 
-  const handleChange = (e) => { 
+  const handleChange = useCallback((e) => { 
     const { name, value } = e.target; 
     setFormData(p => ({ ...p, [name]: value })); 
-  };
+  }, []);
 
-  const validate = () => {
+  const validate = useCallback(() => {
     if (!formData.fecha) return 'Fecha requerida';
     const d = new Date(formData.fecha);
     if (isNaN(d.getTime())) return 'Fecha inválida';
@@ -54,9 +54,9 @@ const VisitasList = () => {
     if (d < now) return 'La fecha debe ser futura';
     if (!formData.nombre_visitante) return 'Nombre requerido';
     return null;
-  };
+  }, [formData]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     const valErr = validate();
     if (valErr) { 
@@ -90,9 +90,9 @@ const VisitasList = () => {
       setFeedback({ type: 'error', message: result.error || 'Error al procesar la visita' });
     }
     setSubmitting(false);
-  };
+  }, [formData, validate, editingId, updateVisita, createVisita, resetForm]);
 
-  const handleDelete = async (v) => {
+  const handleDelete = useCallback(async (v) => {
     if (!window.confirm('¿Cancelar / eliminar esta visita?')) return;
     const r = await deleteVisita(v.id);
     if (!r.success) {
@@ -100,15 +100,15 @@ const VisitasList = () => {
     } else {
       setFeedback({ type: 'success', message: 'Visita eliminada exitosamente' });
     }
-  };
+  }, [deleteVisita]);
 
-  const isFutura = (fechaStr) => {
+  const isFutura = useCallback((fechaStr) => {
     const d = new Date(fechaStr);
     return d > new Date();
-  };
+  }, []);
 
   // Configuración de la tabla
-  const columns = [
+  const columns = useMemo(() => [
     {
       key: 'nombre_visitante',
       header: 'Visitante',
@@ -193,45 +193,47 @@ const VisitasList = () => {
         );
       },
     },
-  ];
+  ], [isFutura, openEdit, handleDelete]);
 
   // Estadísticas
-  const now = new Date();
-  const futuras = visitas.filter(v => {
-    const fecha = v.fecha || v.fecha_visita;
-    return fecha && isFutura(fecha);
-  });
-  const hoy = visitas.filter(v => {
-    const fecha = v.fecha || v.fecha_visita;
-    if (!fecha) return false;
-    const d = new Date(fecha);
-    const today = new Date();
-    return d.toDateString() === today.toDateString();
-  });
+  const statsData = useMemo(() => {
+    const now = new Date();
+    const futuras = visitas.filter(v => {
+      const fecha = v.fecha || v.fecha_visita;
+      return fecha && isFutura(fecha);
+    });
+    const hoy = visitas.filter(v => {
+      const fecha = v.fecha || v.fecha_visita;
+      if (!fecha) return false;
+      const d = new Date(fecha);
+      const today = new Date();
+      return d.toDateString() === today.toDateString();
+    });
 
-  const statsData = [
-    {
-      title: 'Total',
-      value: visitas.length,
-      variant: 'info',
-      icon: Users,
-    },
-    {
-      title: 'Programadas',
-      value: futuras.length,
-      variant: 'success',
-      icon: Calendar,
-    },
-    {
-      title: 'Para hoy',
-      value: hoy.length,
-      variant: 'warning',
-      icon: Clock,
-    },
-  ];
+    return [
+      {
+        title: 'Total',
+        value: visitas.length,
+        variant: 'info',
+        icon: Users,
+      },
+      {
+        title: 'Programadas',
+        value: futuras.length,
+        variant: 'success',
+        icon: Calendar,
+      },
+      {
+        title: 'Para hoy',
+        value: hoy.length,
+        variant: 'warning',
+        icon: Clock,
+      },
+    ];
+  }, [visitas, isFutura]);
 
   // Acciones del header
-  const headerActions = (
+  const headerActions = useMemo(() => (
     <Button
       variant="secondary"
       icon={Plus}
@@ -239,7 +241,7 @@ const VisitasList = () => {
     >
       Nueva Visita
     </Button>
-  );
+  ), [openCreate]);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -286,6 +288,7 @@ const VisitasList = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
+            id="nombre_visitante"
             label="Nombre del Visitante"
             name="nombre_visitante"
             value={formData.nombre_visitante}
@@ -295,6 +298,7 @@ const VisitasList = () => {
           />
           
           <Input
+            id="documento_visitante"
             label="Documento de Identidad"
             name="documento_visitante"
             value={formData.documento_visitante}
@@ -303,6 +307,7 @@ const VisitasList = () => {
           />
           
           <Input
+            id="fecha_visita"
             label="Fecha y Hora de Visita"
             type="datetime-local"
             name="fecha"

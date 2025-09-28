@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 /**
@@ -18,7 +18,10 @@ const Input = ({
   className = '',
   ...props
 }) => {
-  const inputId = props.id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  // Usar useMemo para evitar que el ID cambie en cada render
+  const inputId = useMemo(() => {
+    return props.id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  }, [props.id]);
 
   return (
     <div className={`space-y-1 ${className}`}>
