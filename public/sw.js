@@ -244,6 +244,96 @@ self.addEventListener('push', function(event) {
           console.error('Error mostrando notificación de pago:', error);
         })
     );
+  } else if (data.data?.type === 'vehiculo_entrada' || data.type === 'vehiculo_entrada') {
+    const notificationData = data.data || data;
+    const options = {
+      body: data.body || data.mensaje || 'Vehículo ha llegado',
+      icon: data.icon || '/icons/car-arrived.png',
+      badge: data.badge || '/icons/icon-144x144.png',
+      tag: `vehiculo-entrada-${notificationData.vehiculo_id || 'unknown'}`,
+      data: {
+        type: notificationData.type || 'vehiculo_entrada',
+        id: notificationData.vehiculo_id || 'unknown',
+        url: notificationData.url || `/vehiculos/${notificationData.vehiculo_id || ''}`
+      },
+      actions: [
+        {
+          action: 'view_vehiculo',
+          title: 'Ver Vehículo',
+          icon: '/icons/car-arrived.png'
+        },
+        {
+          action: 'dismiss',
+          title: 'Cerrar'
+        }
+      ],
+      vibrate: [200, 100, 200],
+      requireInteraction: true
+    };
+
+    event.waitUntil(
+      self.registration.showNotification(data.title || data.titulo || '🚗 Vehículo ha llegado', options)
+        .then(() => {
+          console.log('✅ Notificación de entrada de vehículo mostrada exitosamente');
+          return self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        })
+        .then((clients) => {
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'PUSH_NOTIFICATION_RECEIVED',
+              data: data
+            });
+          });
+        })
+        .catch(error => {
+          console.error('❌ Error mostrando notificación de entrada de vehículo:', error);
+        })
+    );
+  } else if (data.data?.type === 'vehiculo_salida' || data.type === 'vehiculo_salida') {
+    const notificationData = data.data || data;
+    const options = {
+      body: data.body || data.mensaje || 'Vehículo se fue',
+      icon: data.icon || '/icons/car-departed.png',
+      badge: data.badge || '/icons/icon-144x144.png',
+      tag: `vehiculo-salida-${notificationData.vehiculo_id || 'unknown'}`,
+      data: {
+        type: notificationData.type || 'vehiculo_salida',
+        id: notificationData.vehiculo_id || 'unknown',
+        url: notificationData.url || `/vehiculos/${notificationData.vehiculo_id || ''}`
+      },
+      actions: [
+        {
+          action: 'view_vehiculo',
+          title: 'Ver Vehículo',
+          icon: '/icons/car-departed.png'
+        },
+        {
+          action: 'dismiss',
+          title: 'Cerrar'
+        }
+      ],
+      vibrate: [200, 100, 200],
+      requireInteraction: true
+    };
+
+    event.waitUntil(
+      self.registration.showNotification(data.title || data.titulo || '🚗 Vehículo se fue', options)
+        .then(() => {
+          console.log('✅ Notificación de salida de vehículo mostrada exitosamente');
+          return self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        })
+        .then((clients) => {
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'PUSH_NOTIFICATION_RECEIVED',
+              data: data
+            });
+          });
+        })
+        .catch(error => {
+          console.error('❌ Error mostrando notificación de salida de vehículo:', error);
+        })
+    );
   } else {
     // Manejar notificaciones de otros tipos
     console.log('📱 Notificación de tipo desconocido:', data.type || 'unknown');
