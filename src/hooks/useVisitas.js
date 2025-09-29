@@ -51,6 +51,8 @@ const useVisitas = () => {
     setLoading(true);
     setError(null);
     try {
+      // Conservar fecha original (puede venir con hora) para UI
+      const originalFechaInput = visitaData?.fecha;
       // Intentar respetar campos esperados por backend
       const payload = normalizeVisitaPayload(visitaData);
       const response = await axiosInstance.post('/visitas/', payload, withOfflineSupport({}));
@@ -62,6 +64,18 @@ const useVisitas = () => {
         created = { id: tempId, ...payload };
         // también incluir campo 'fecha' para compatibilidad en UI
         if (created.fecha_visita && !created.fecha) created.fecha = created.fecha_visita;
+      }
+      // Adjuntar hora_local (solo UI) si el usuario proporcionó hora al crear
+      if (originalFechaInput && typeof originalFechaInput === 'string' && originalFechaInput.includes('T')) {
+        const timePart = originalFechaInput.split('T')[1];
+        if (timePart) {
+          const hm = timePart.slice(0,5); // HH:MM
+          created.hora_local = hm;
+          // Para facilitar formateo posterior: si sólo tenemos fecha en backend, construir un campo fecha_ui completo
+          if (created.fecha_visita && !created.fecha_completa_ui) {
+            created.fecha_completa_ui = `${created.fecha_visita}T${hm}`;
+          }
+        }
       }
       setVisitas(prev => {
         const next = [...prev, created];
